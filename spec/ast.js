@@ -1,18 +1,18 @@
 import { parse, parseWithoutProcessing } from '../dist/esm';
-import { equals, shouldThrow } from './utils';
+import { equals } from './utils';
 
 describe('ast', function() {
   describe('whitespace control', function() {
     describe('parse', function() {
       it('mustache', function() {
-        var ast = parse('  {{~comment~}} ');
+        let ast = parse('  {{~comment~}} ');
 
         equals(ast.body[0].value, '');
         equals(ast.body[2].value, '');
       });
 
       it('block statements', function() {
-        var ast = parse(' {{# comment~}} \nfoo\n {{~/comment}}');
+        let ast = parse(' {{# comment~}} \nfoo\n {{~/comment}}');
 
         equals(ast.body[0].value, '');
         equals(ast.body[1].program.body[0].value, 'foo');
@@ -21,14 +21,14 @@ describe('ast', function() {
 
     describe('parseWithoutProcessing', function() {
       it('mustache', function() {
-        var ast = parseWithoutProcessing('  {{~comment~}} ');
+        let ast = parseWithoutProcessing('  {{~comment~}} ');
 
         equals(ast.body[0].value, '  ');
         equals(ast.body[2].value, ' ');
       });
 
       it('block statements', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
           ' {{# comment~}} \nfoo\n {{~/comment}}'
         );
 
@@ -41,14 +41,14 @@ describe('ast', function() {
   describe('standalone flags', function() {
     describe('mustache', function() {
       it('does not mark mustaches as standalone', function() {
-        var ast = parse('  {{comment}} ');
+        let ast = parse('  {{comment}} ');
         equals(!!ast.body[0].value, true);
         equals(!!ast.body[2].value, true);
       });
     });
     describe('blocks - parseWithoutProcessing', function() {
       it('block mustaches', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
             ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
           ),
           block = ast.body[1];
@@ -61,7 +61,7 @@ describe('ast', function() {
         equals(ast.body[2].value, ' ');
       });
       it('initial block mustaches', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
             '{{# comment}} \nfoo\n {{/comment}}'
           ),
           block = ast.body[0];
@@ -69,7 +69,7 @@ describe('ast', function() {
         equals(block.program.body[0].value, ' \nfoo\n ');
       });
       it('mustaches with children', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
             '{{# comment}} \n{{foo}}\n {{/comment}}'
           ),
           block = ast.body[0];
@@ -79,7 +79,7 @@ describe('ast', function() {
         equals(block.program.body[2].value, '\n ');
       });
       it('nested block mustaches', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
             '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
           ),
           body = ast.body[0].program.body,
@@ -91,7 +91,7 @@ describe('ast', function() {
         equals(block.inverse.body[0].value, ' \n  bar \n  ');
       });
       it('column 0 block mustaches', function() {
-        var ast = parseWithoutProcessing(
+        let ast = parseWithoutProcessing(
             'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
           ),
           block = ast.body[1];
@@ -106,7 +106,7 @@ describe('ast', function() {
     });
     describe('blocks', function() {
       it('marks block mustaches as standalone', function() {
-        var ast = parse(
+        let ast = parse(
             ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
           ),
           block = ast.body[1];
@@ -119,13 +119,13 @@ describe('ast', function() {
         equals(ast.body[2].value, '');
       });
       it('marks initial block mustaches as standalone', function() {
-        var ast = parse('{{# comment}} \nfoo\n {{/comment}}'),
+        let ast = parse('{{# comment}} \nfoo\n {{/comment}}'),
           block = ast.body[0];
 
         equals(block.program.body[0].value, 'foo\n');
       });
       it('marks mustaches with children as standalone', function() {
-        var ast = parse('{{# comment}} \n{{foo}}\n {{/comment}}'),
+        let ast = parse('{{# comment}} \n{{foo}}\n {{/comment}}'),
           block = ast.body[0];
 
         equals(block.program.body[0].value, '');
@@ -133,7 +133,7 @@ describe('ast', function() {
         equals(block.program.body[2].value, '\n');
       });
       it('marks nested block mustaches as standalone', function() {
-        var ast = parse(
+        let ast = parse(
             '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
           ),
           body = ast.body[0].program.body,
@@ -147,7 +147,7 @@ describe('ast', function() {
         equals(body[0].value, '');
       });
       it('does not mark nested block mustaches as standalone', function() {
-        var ast = parse(
+        let ast = parse(
             '{{#foo}} {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} {{/foo}}'
           ),
           body = ast.body[0].program.body,
@@ -161,7 +161,7 @@ describe('ast', function() {
         equals(body[0].omit, undefined);
       });
       it('does not mark nested initial block mustaches as standalone', function() {
-        var ast = parse(
+        let ast = parse(
             '{{#foo}}{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}}{{/foo}}'
           ),
           body = ast.body[0].program.body,
@@ -174,7 +174,7 @@ describe('ast', function() {
       });
 
       it('marks column 0 block mustaches as standalone', function() {
-        var ast = parse(
+        let ast = parse(
             'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
           ),
           block = ast.body[1];
@@ -189,11 +189,11 @@ describe('ast', function() {
     });
     describe('partials - parseWithoutProcessing', function() {
       it('simple partial', function() {
-        var ast = parseWithoutProcessing('{{> partial }} ');
+        let ast = parseWithoutProcessing('{{> partial }} ');
         equals(ast.body[1].value, ' ');
       });
       it('indented partial', function() {
-        var ast = parseWithoutProcessing('  {{> partial }} ');
+        let ast = parseWithoutProcessing('  {{> partial }} ');
         equals(ast.body[0].value, '  ');
         equals(ast.body[1].indent, '');
         equals(ast.body[2].value, ' ');
@@ -201,17 +201,17 @@ describe('ast', function() {
     });
     describe('partials', function() {
       it('marks partial as standalone', function() {
-        var ast = parse('{{> partial }} ');
+        let ast = parse('{{> partial }} ');
         equals(ast.body[1].value, '');
       });
       it('marks indented partial as standalone', function() {
-        var ast = parse('  {{> partial }} ');
+        let ast = parse('  {{> partial }} ');
         equals(ast.body[0].value, '');
         equals(ast.body[1].indent, '  ');
         equals(ast.body[2].value, '');
       });
       it('marks those around content as not standalone', function() {
-        var ast = parse('a{{> partial }}');
+        let ast = parse('a{{> partial }}');
         equals(ast.body[0].omit, undefined);
 
         ast = parse('{{> partial }}a');
@@ -220,27 +220,27 @@ describe('ast', function() {
     });
     describe('comments - parseWithoutProcessing', function() {
       it('simple comment', function() {
-        var ast = parseWithoutProcessing('{{! comment }} ');
+        let ast = parseWithoutProcessing('{{! comment }} ');
         equals(ast.body[1].value, ' ');
       });
       it('indented comment', function() {
-        var ast = parseWithoutProcessing('  {{! comment }} ');
+        let ast = parseWithoutProcessing('  {{! comment }} ');
         equals(ast.body[0].value, '  ');
         equals(ast.body[2].value, ' ');
       });
     });
     describe('comments', function() {
       it('marks comment as standalone', function() {
-        var ast = parse('{{! comment }} ');
+        let ast = parse('{{! comment }} ');
         equals(ast.body[1].value, '');
       });
       it('marks indented comment as standalone', function() {
-        var ast = parse('  {{! comment }} ');
+        let ast = parse('  {{! comment }} ');
         equals(ast.body[0].value, '');
         equals(ast.body[2].value, '');
       });
       it('marks those around content as not standalone', function() {
-        var ast = parse('a{{! comment }}');
+        let ast = parse('a{{! comment }}');
         equals(ast.body[0].omit, undefined);
 
         ast = parse('{{! comment }}a');

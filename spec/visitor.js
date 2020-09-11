@@ -5,7 +5,7 @@ describe('Visitor', function() {
   it('should provide coverage', function() {
     // Simply run the thing and make sure it does not fail and that all of the
     // stub methods are executed
-    var visitor = new Visitor();
+    let visitor = new Visitor();
     visitor.accept(
       parse(
         '{{foo}}{{#foo (bar 1 "1" true undefined null) foo=@data}}{{!comment}}{{> bar }} {{/foo}}'
@@ -17,7 +17,7 @@ describe('Visitor', function() {
   });
 
   it('should traverse to stubs', function() {
-    var visitor = new Visitor();
+    let visitor = new Visitor();
 
     visitor.StringLiteral = function(string) {
       equals(string.value, '2');
@@ -53,14 +53,14 @@ describe('Visitor', function() {
   describe('mutating', function() {
     describe('fields', function() {
       it('should replace value', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
 
         visitor.mutating = true;
         visitor.StringLiteral = function(string) {
           return { type: 'NumberLiteral', value: 42, loc: string.loc };
         };
 
-        var ast = parse('{{foo foo="foo"}}');
+        let ast = parse('{{foo foo="foo"}}');
         visitor.accept(ast);
         equals(
           print(ast),
@@ -68,10 +68,10 @@ describe('Visitor', function() {
         );
       });
       it('should treat undefined resonse as identity', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
         visitor.mutating = true;
 
-        var ast = parse('{{foo foo=42}}');
+        let ast = parse('{{foo foo=42}}');
         visitor.accept(ast);
         equals(
           print(ast),
@@ -79,28 +79,28 @@ describe('Visitor', function() {
         );
       });
       it('should remove false responses', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
 
         visitor.mutating = true;
         visitor.Hash = function() {
           return false;
         };
 
-        var ast = parse('{{foo foo=42}}');
+        let ast = parse('{{foo foo=42}}');
         visitor.accept(ast);
         equals(print(ast), '{{ PATH:foo [] }}\n');
       });
       it('should throw when removing required values', function() {
         shouldThrow(
           function() {
-            var visitor = new Visitor();
+            let visitor = new Visitor();
 
             visitor.mutating = true;
             visitor.PathExpression = function() {
               return false;
             };
 
-            var ast = parse('{{foo 42}}');
+            let ast = parse('{{foo 42}}');
             visitor.accept(ast);
           },
           Exception,
@@ -110,14 +110,14 @@ describe('Visitor', function() {
       it('should throw when returning non-node responses', function() {
         shouldThrow(
           function() {
-            var visitor = new Visitor();
+            let visitor = new Visitor();
 
             visitor.mutating = true;
             visitor.PathExpression = function() {
               return {};
             };
 
-            var ast = parse('{{foo 42}}');
+            let ast = parse('{{foo 42}}');
             visitor.accept(ast);
           },
           Exception,
@@ -127,34 +127,34 @@ describe('Visitor', function() {
     });
     describe('arrays', function() {
       it('should replace value', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
 
         visitor.mutating = true;
         visitor.StringLiteral = function(string) {
           return { type: 'NumberLiteral', value: 42, loc: string.locInfo };
         };
 
-        var ast = parse('{{foo "foo"}}');
+        let ast = parse('{{foo "foo"}}');
         visitor.accept(ast);
         equals(print(ast), '{{ PATH:foo [NUMBER{42}] }}\n');
       });
       it('should treat undefined resonse as identity', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
         visitor.mutating = true;
 
-        var ast = parse('{{foo 42}}');
+        let ast = parse('{{foo 42}}');
         visitor.accept(ast);
         equals(print(ast), '{{ PATH:foo [NUMBER{42}] }}\n');
       });
       it('should remove false responses', function() {
-        var visitor = new Visitor();
+        let visitor = new Visitor();
 
         visitor.mutating = true;
         visitor.NumberLiteral = function() {
           return false;
         };
 
-        var ast = parse('{{foo 42}}');
+        let ast = parse('{{foo 42}}');
         visitor.accept(ast);
         equals(print(ast), '{{ PATH:foo [] }}\n');
       });
