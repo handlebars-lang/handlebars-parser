@@ -1,4 +1,4 @@
-var AssertError;
+let AssertError;
 if (Error.captureStackTrace) {
   AssertError = function AssertError(message, caller) {
     Error.prototype.constructor.call(this, message);
@@ -32,7 +32,7 @@ export function equals(a, b, msg) {
  * @see https://www.chaijs.com/api/bdd/#method_throw
  */
 export function shouldThrow(callback, type, msg) {
-  var failed;
+  let failed;
   try {
     callback();
     failed = true;

@@ -3,7 +3,7 @@ import { equals, shouldThrow } from './utils';
 
 describe('parser', function() {
   function astFor(template) {
-    var ast = parse(template);
+    let ast = parse(template);
     return print(ast);
   }
 
@@ -418,7 +418,7 @@ describe('parser', function() {
   });
 
   it('GH1024 - should track program location properly', function() {
-    var p = parse(
+    let p = parse(
       '\n' +
         '  {{#if foo}}\n' +
         '    {{bar}}\n' +
