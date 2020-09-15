@@ -14,6 +14,7 @@
   "author": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "prepublishOnly": "npm run build",
