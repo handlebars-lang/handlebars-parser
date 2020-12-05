@@ -282,6 +282,41 @@ describe('parser', function() {
     );
   });
 
+  it('parses mustaches with sub-expressions as the callable', function() {
+    equals(
+      astFor('{{(my-helper foo)}}'),
+      '{{ PATH:my-helper [PATH:foo] [] }}\n'
+    );
+  });
+
+  it('parses mustaches with sub-expressions as the callable (with args)', function() {
+    equals(
+      astFor('{{(my-helper foo) bar}}'),
+      '{{ PATH:my-helper [PATH:foo] [PATH:bar] }}\n'
+    );
+  });
+
+  it('parses sub-expressions with a sub-expression as the callable', function() {
+    equals(
+      astFor('{{((my-helper foo))}}'),
+      '{{ PATH:my-helper [PATH:foo] [] [] }}\n'
+    );
+  });
+
+  it('parses sub-expressions with a sub-expression as the callable (with args)', function() {
+    equals(
+      astFor('{{((my-helper foo) bar)}}'),
+      '{{ PATH:my-helper [PATH:foo] [PATH:bar] [] }}\n'
+    );
+  });
+
+  it('parses arguments with a sub-expression as the callable (with args)', function() {
+    equals(
+      astFor('{{my-helper ((foo) bar) baz=((foo bar))}}'),
+      '{{ PATH:my-helper [PATH:foo [] [PATH:bar]] HASH{baz=PATH:foo [PATH:bar] []} }}\n'
+    );
+  });
+
   it('parses inverse block with block params', function() {
     equals(
       astFor('{{^foo as |bar baz|}}content{{/foo}}'),

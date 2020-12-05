@@ -23,7 +23,7 @@ export interface Statement extends Node {}
 
 export interface MustacheStatement extends Statement {
   type: 'MustacheStatement';
-  path: PathExpression | Literal;
+  path: SubExpression | PathExpression | Literal;
   params: Expression[];
   hash: Hash;
   escaped: boolean;
@@ -81,7 +81,7 @@ export interface Expression extends Node {}
 
 export interface SubExpression extends Expression {
   type: 'SubExpression';
-  path: PathExpression;
+  path: SubExpression | PathExpression;
   params: Expression[];
   hash: Hash;
 }
