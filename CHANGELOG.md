@@ -1,3 +1,11 @@
+## v2.0.0 (2020-12-09)
+
+#### :boom: Breaking Change
+* [#3](https://github.com/handlebars-lang/handlebars-parser/pull/3) Make sub-expressions callable ([@pzuraq](https://github.com/pzuraq))
+
+#### Committers: 1
+- Chris Garrett ([@pzuraq](https://github.com/pzuraq))
+
 ## v1.1.0 (2020-09-18)
 
 #### :rocket: Enhancement
