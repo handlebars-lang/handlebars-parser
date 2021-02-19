@@ -148,11 +148,12 @@ helperName
   ;
 
 dataName
-  : DATA pathSegments -> yy.preparePath(true, $2, @$)
+  : DATA pathSegments -> yy.preparePath(true, false, $2, @$)
   ;
 
 path
-  : pathSegments -> yy.preparePath(false, $1, @$)
+  : sexpr SEP pathSegments -> yy.preparePath(false, $1, $3, @$)
+  | pathSegments -> yy.preparePath(false, false, $1, @$)
   ;
 
 pathSegments

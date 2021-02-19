@@ -317,6 +317,34 @@ describe('parser', function() {
     );
   });
 
+  it('parses paths with sub-expressions as the root', function() {
+    equals(
+      astFor('{{(my-helper foo).bar}}'),
+      '{{ PATH:[PATH:my-helper [PATH:foo]]/bar [] }}\n'
+    );
+  });
+
+  it('parses paths with sub-expressions as the root as a callable', function() {
+    equals(
+      astFor('{{((my-helper foo).bar baz)}}'),
+      '{{ PATH:[PATH:my-helper [PATH:foo]]/bar [PATH:baz] [] }}\n'
+    );
+  });
+
+  it('parses paths with sub-expressions as the root as an argument', function() {
+    equals(
+      astFor('{{(foo (my-helper bar).baz)}}'),
+      '{{ PATH:foo [PATH:[PATH:my-helper [PATH:bar]]/baz] [] }}\n'
+    );
+  });
+
+  it('parses paths with sub-expressions as the root as a named argument', function() {
+    equals(
+      astFor('{{(foo bar=(my-helper baz).qux)}}'),
+      '{{ PATH:foo [] HASH{bar=PATH:[PATH:my-helper [PATH:baz]]/qux} [] }}\n'
+    );
+  });
+
   it('parses inverse block with block params', function() {
     equals(
       astFor('{{^foo as |bar baz|}}content{{/foo}}'),

@@ -90,7 +90,9 @@ export interface PathExpression extends Expression {
   type: 'PathExpression';
   data: boolean;
   depth: number;
-  parts: string[];
+  parts: (string | SubExpression)[];
+  head: SubExpression | string;
+  tail: string[];
   original: string;
 }
 
