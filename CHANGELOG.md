@@ -1,3 +1,11 @@
+## v2.1.0 (2021-02-22)
+
+#### :rocket: Enhancement
+* [#4](https://github.com/handlebars-lang/handlebars-parser/pull/4) [FEATURE] Allows SubExpressions to be PathExpression roots ([@pzuraq](https://github.com/pzuraq))
+
+#### Committers: 1
+- Chris Garrett ([@pzuraq](https://github.com/pzuraq))
+
 ## v2.0.0 (2020-12-09)
 
 #### :boom: Breaking Change
