@@ -38,6 +38,38 @@ describe('ast', function() {
     });
   });
 
+  describe('node details', function () {
+    describe('paths', function () {
+      it('{{this}}', function () {
+        let path = parse('{{this}}').body[0].path;
+        equals(path.original, 'this');
+        equals(path.head, undefined);
+        equals(path.tail.length, 0);
+        equals(path.parts.length, 0);
+      });
+
+      it('{{this.bar}}', function () {
+        let path = parse('{{this.bar}}').body[0].path;
+        equals(path.original, 'this.bar');
+        equals(path.head, 'bar');
+        equals(path.tail.length, 0);
+        equals(path.parts.length, 1);
+        equals(path.parts[0], 'bar');
+      });
+
+      it('{{foo.bar}}', function () {
+        let path = parse('{{foo.bar}}').body[0].path;
+        equals(path.original, 'foo.bar');
+        equals(path.head, 'foo');
+        equals(path.tail.length, 1);
+        equals(path.tail[0], 'bar')
+        equals(path.parts.length, 2);
+        equals(path.parts[0], 'foo');
+        equals(path.parts[1], 'bar');
+      });
+    });
+  });
+
   describe('standalone flags', function() {
     describe('mustache', function() {
       it('does not mark mustaches as standalone', function() {
