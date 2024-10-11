@@ -151,12 +151,17 @@ dataName
   : DATA pathSegments -> yy.preparePath(true, false, $2, @$)
   ;
 
+sep
+  : SEP -> $1
+  | PRIVATE_SEP -> $1
+  ;
+
 path
-  : sexpr SEP pathSegments -> yy.preparePath(false, $1, $3, @$)
+  : sexpr sep pathSegments -> yy.preparePath(false, $1, $3, @$)
   | pathSegments -> yy.preparePath(false, false, $1, @$)
   ;
 
 pathSegments
-  : pathSegments SEP ID { $1.push({part: yy.id($3), original: $3, separator: $2}); $$ = $1; }
+  : pathSegments sep ID { $1.push({part: yy.id($3), original: $3, separator: $2}); $$ = $1; }
   | ID -> [{part: yy.id($1), original: $1}]
   ;

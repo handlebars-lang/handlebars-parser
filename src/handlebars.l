@@ -103,6 +103,7 @@ ID    [^\s!"#%-,\.\/;->@\[-\^`\{-~]+/{LOOKAHEAD}
 <mu>"="                          return 'EQUALS';
 <mu>".."                         return 'ID';
 <mu>"."/{LOOKAHEAD}              return 'ID';
+<mu>".#"                         return 'PRIVATE_SEP';
 <mu>[\/.]                        return 'SEP';
 <mu>\s+                          // ignore whitespace
 <mu>"}"{RIGHT_STRIP}?"}}"        this.popState(); return 'CLOSE_UNESCAPED';

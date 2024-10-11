@@ -57,15 +57,35 @@ describe('ast', function() {
         equals(path.parts[0], 'bar');
       });
 
+      it('{{this.#bar}}', function () {
+        let path = parse('{{this.#bar}}').body[0].path;
+        equals(path.original, 'this.#bar');
+        equals(path.head, '#bar');
+        equals(path.tail.length, 0);
+        equals(path.parts.length, 1);
+        equals(path.parts[0], '#bar');
+      });
+
       it('{{foo.bar}}', function () {
         let path = parse('{{foo.bar}}').body[0].path;
         equals(path.original, 'foo.bar');
         equals(path.head, 'foo');
         equals(path.tail.length, 1);
-        equals(path.tail[0], 'bar')
+        equals(path.tail[0], 'bar');
         equals(path.parts.length, 2);
         equals(path.parts[0], 'foo');
         equals(path.parts[1], 'bar');
+      });
+
+      it('{{foo.#bar}}', function () {
+        let path = parse('{{foo.#bar}}').body[0].path;
+        equals(path.original, 'foo.#bar');
+        equals(path.head, 'foo');
+        equals(path.tail.length, 1);
+        equals(path.tail[0], '#bar');
+        equals(path.parts.length, 2);
+        equals(path.parts[0], 'foo');
+        equals(path.parts[1], '#bar');
       });
     });
   });
@@ -81,8 +101,8 @@ describe('ast', function() {
     describe('blocks - parseWithoutProcessing', function() {
       it('block mustaches', function() {
         let ast = parseWithoutProcessing(
-            ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
-          ),
+          ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
+        ),
           block = ast.body[1];
 
         equals(ast.body[0].value, ' ');
@@ -102,8 +122,8 @@ describe('ast', function() {
       });
       it('mustaches with children', function() {
         let ast = parseWithoutProcessing(
-            '{{# comment}} \n{{foo}}\n {{/comment}}'
-          ),
+          '{{# comment}} \n{{foo}}\n {{/comment}}'
+        ),
           block = ast.body[0];
 
         equals(block.program.body[0].value, ' \n');
@@ -112,8 +132,8 @@ describe('ast', function() {
       });
       it('nested block mustaches', function() {
         let ast = parseWithoutProcessing(
-            '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
-          ),
+          '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
+        ),
           body = ast.body[0].program.body,
           block = body[1];
 
@@ -124,8 +144,8 @@ describe('ast', function() {
       });
       it('column 0 block mustaches', function() {
         let ast = parseWithoutProcessing(
-            'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
-          ),
+          'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
+        ),
           block = ast.body[1];
 
         equals(ast.body[0].omit, undefined);
@@ -139,8 +159,8 @@ describe('ast', function() {
     describe('blocks', function() {
       it('marks block mustaches as standalone', function() {
         let ast = parse(
-            ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
-          ),
+          ' {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
+        ),
           block = ast.body[1];
 
         equals(ast.body[0].value, '');
@@ -166,8 +186,8 @@ describe('ast', function() {
       });
       it('marks nested block mustaches as standalone', function() {
         let ast = parse(
-            '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
-          ),
+          '{{#foo}} \n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} \n{{/foo}}'
+        ),
           body = ast.body[0].program.body,
           block = body[1];
 
@@ -180,8 +200,8 @@ describe('ast', function() {
       });
       it('does not mark nested block mustaches as standalone', function() {
         let ast = parse(
-            '{{#foo}} {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} {{/foo}}'
-          ),
+          '{{#foo}} {{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} {{/foo}}'
+        ),
           body = ast.body[0].program.body,
           block = body[1];
 
@@ -194,8 +214,8 @@ describe('ast', function() {
       });
       it('does not mark nested initial block mustaches as standalone', function() {
         let ast = parse(
-            '{{#foo}}{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}}{{/foo}}'
-          ),
+          '{{#foo}}{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}}{{/foo}}'
+        ),
           body = ast.body[0].program.body,
           block = body[0];
 
@@ -207,8 +227,8 @@ describe('ast', function() {
 
       it('marks column 0 block mustaches as standalone', function() {
         let ast = parse(
-            'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
-          ),
+          'test\n{{# comment}} \nfoo\n {{else}} \n  bar \n  {{/comment}} '
+        ),
           block = ast.body[1];
 
         equals(ast.body[0].omit, undefined);

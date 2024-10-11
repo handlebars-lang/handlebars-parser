@@ -15,7 +15,7 @@ if (Error.captureStackTrace) {
 }
 
 /**
- * @deprecated Use chai's expect-style API instead (`expect(actualValue).to.equal(expectedValue)`)
+ * @todo Use chai's expect-style API instead (`expect(actualValue).to.equal(expectedValue)`)
  * @see https://www.chaijs.com/api/bdd/
  */
 export function equals(a, b, msg) {
@@ -25,10 +25,10 @@ export function equals(a, b, msg) {
       equals
     );
   }
-};
+}
 
 /**
- * @deprecated Use chai's expect-style API instead (`expect(actualValue).to.equal(expectedValue)`)
+ * @todo Use chai's expect-style API instead (`expect(actualValue).to.equal(expectedValue)`)
  * @see https://www.chaijs.com/api/bdd/#method_throw
  */
 export function shouldThrow(callback, type, msg) {
@@ -46,11 +46,11 @@ export function shouldThrow(callback, type, msg) {
     ) {
       throw new AssertError(
         'Throw mismatch: Expected ' +
-          caught.message +
-          ' to match ' +
-          msg +
-          '\n\n' +
-          caught.stack,
+        caught.message +
+        ' to match ' +
+        msg +
+        '\n\n' +
+        caught.stack,
         shouldThrow
       );
     }
@@ -58,4 +58,4 @@ export function shouldThrow(callback, type, msg) {
   if (failed) {
     throw new AssertError('It failed to throw', shouldThrow);
   }
-};
+}
