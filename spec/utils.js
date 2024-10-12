@@ -1,3 +1,5 @@
+import { parse, print } from '../dist/esm';
+
 let AssertError;
 if (Error.captureStackTrace) {
   AssertError = function AssertError(message, caller) {
@@ -18,12 +20,24 @@ if (Error.captureStackTrace) {
  * @todo Use chai's expect-style API instead (`expect(actualValue).to.equal(expectedValue)`)
  * @see https://www.chaijs.com/api/bdd/
  */
-export function equals(a, b, msg) {
-  if (a !== b) {
+export function equals(actual, expected, msg) {
+  if (actual !== expected) {
     throw new AssertError(
-      "'" + a + "' should === '" + b + "'" + (msg ? ': ' + msg : ''),
+      `\n       Actual: ${actual}     Expected: ${expected}` + (msg ? `\n${msg}` : ''),
       equals
     );
+  }
+}
+
+export function equalsAst(source, expected, msg) {
+  const ast = astFor(source);
+
+  if (ast !== `${expected}\n`) {
+    throw new AssertError(
+      `\n       Source: ${source}\n\n       Actual: ${ast}     Expected: ${expected}\n` + (msg ? `\n${msg}` : ''),
+      equals
+    );
+
   }
 }
 
@@ -59,3 +73,7 @@ export function shouldThrow(callback, type, msg) {
     throw new AssertError('It failed to throw', shouldThrow);
   }
 }
+  function astFor(template) {
+    let ast = parse(template);
+    return print(ast);
+  }
