@@ -17,14 +17,14 @@
   "types": "types/index.d.ts",
   "scripts": {
     "lint": "eslint .",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "pnpm run build",
     "build": "npm-run-all build:parser build:esm build:cjs",
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module es2015 --target es5 --outDir dist/esm",
     "build:jison": "jison -m js src/handlebars.yy src/handlebars.l -o lib/parser.js",
     "build:parser": "npm-run-all build:jison build:parser-suffix",
     "build:parser-suffix": "combine-files lib/parser.js,src/parser-suffix.js lib/parser.js",
-    "test": "npm run build && mocha spec --require esm"
+    "test": "pnpm run build && mocha spec --require esm"
   },
   "prettier": {
     "tabWidth": 2,
