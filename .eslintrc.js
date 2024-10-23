@@ -58,7 +58,7 @@ module.exports = {
     //--------------//
     'no-var': 'error',
   },
-  languageOptions: {
+  parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
