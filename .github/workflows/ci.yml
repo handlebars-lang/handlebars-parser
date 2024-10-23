@@ -19,8 +19,9 @@ jobs:
       - uses: wyvox/action@v1
 
       - name: install dependencies
-        run: pnpm ci
-
+        run: pnpm i
+        env:
+          CI: true
       - run: pnpm run lint
 
   tests:
@@ -29,10 +30,11 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
+      - uses: wyvox/action@v1
 
       - name: install dependencies
-        run: pnpm ci
+        run: pnpm i
+        env:
+          CI: true
 
       - run: pnpm test
