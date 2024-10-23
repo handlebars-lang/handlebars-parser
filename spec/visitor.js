@@ -64,7 +64,7 @@ describe('Visitor', function() {
         visitor.accept(ast);
         equals(
           print(ast),
-          '{{ PATH:foo [] HASH{foo=NUMBER{42}} }}\n'
+          '{{ p%foo [] HASH{foo=n%42} }}\n'
         );
       });
       it('should treat undefined resonse as identity', function() {
@@ -75,7 +75,7 @@ describe('Visitor', function() {
         visitor.accept(ast);
         equals(
           print(ast),
-          '{{ PATH:foo [] HASH{foo=NUMBER{42}} }}\n'
+          '{{ p%foo [] HASH{foo=n%42} }}\n'
         );
       });
       it('should remove false responses', function() {
@@ -88,7 +88,7 @@ describe('Visitor', function() {
 
         let ast = parse('{{foo foo=42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ PATH:foo [] }}\n');
+        equals(print(ast), '{{ p%foo [] }}\n');
       });
       it('should throw when removing required values', function() {
         shouldThrow(
@@ -136,7 +136,7 @@ describe('Visitor', function() {
 
         let ast = parse('{{foo "foo"}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ PATH:foo [NUMBER{42}] }}\n');
+        equals(print(ast), '{{ p%foo [n%42] }}\n');
       });
       it('should treat undefined resonse as identity', function() {
         let visitor = new Visitor();
@@ -144,7 +144,7 @@ describe('Visitor', function() {
 
         let ast = parse('{{foo 42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ PATH:foo [NUMBER{42}] }}\n');
+        equals(print(ast), '{{ p%foo [n%42] }}\n');
       });
       it('should remove false responses', function() {
         let visitor = new Visitor();
@@ -156,7 +156,7 @@ describe('Visitor', function() {
 
         let ast = parse('{{foo 42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ PATH:foo [] }}\n');
+        equals(print(ast), '{{ p%foo [] }}\n');
       });
     });
   });
