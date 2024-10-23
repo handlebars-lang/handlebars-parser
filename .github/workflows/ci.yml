@@ -16,8 +16,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: volta-cli/action@v1
+      - uses: wyvox/action@v1
 
       - name: install dependencies
         run: pnpm ci
