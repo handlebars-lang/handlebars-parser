@@ -20,7 +20,7 @@ export class ParserHelpers {
   constructor(options: ParseOptions) {
     this.#options = options;
 
-    let squareSyntax;
+    let squareSyntax: SyntaxOptions['square'];
 
     if (typeof options?.syntax?.square === 'function') {
       squareSyntax = options.syntax.square;
