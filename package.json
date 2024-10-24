@@ -1,6 +1,5 @@
 {
   "name": "@handlebars/parser",
-  "type": "module",
   "version": "2.1.0",
   "description": "The parser for the Handlebars language",
   "homepage": "https://github.com/handlebars-lang/handlebars-parser#readme",
@@ -16,35 +15,16 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "types/index.d.ts",
-  "exports": {
-    ".": {
-      "require": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "default": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      }
-    }
-  },
   "scripts": {
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build",
     "build": "npm-run-all build:parser build:esm build:cjs",
-    "build:cjs": "tsc --module nodenext --moduleResolution nodenext --target es5 --outDir dist/cjs",
+    "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module es2015 --target es5 --outDir dist/esm",
     "build:jison": "jison -m js src/handlebars.yy src/handlebars.l -o lib/parser.js",
     "build:parser": "npm-run-all build:jison build:parser-suffix",
     "build:parser-suffix": "combine-files lib/parser.js,src/parser-suffix.js lib/parser.js",
-    "pretest": "pnpm run build",
-    "test": "mocha --inline-diffs spec",
-    "pretest:bail": "pnpm run build",
-    "test:bail": "mocha --bail --inline-diffs spec"
+    "test": "pnpm run build && mocha spec --require esm"
   },
   "prettier": {
     "tabWidth": 2,
@@ -55,9 +35,10 @@
     "combine-files": "^1.1.8",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-compat": "^6.0.1",
+    "eslint-plugin-compat": "^3.13.0",
+    "esm": "^3.2.25",
     "jison": "^0.4.18",
-    "mocha": "^10.7.3",
+    "mocha": "^8.1.3",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.1",
     "release-it": "^14.0.2",

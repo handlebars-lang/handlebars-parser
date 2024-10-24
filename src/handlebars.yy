@@ -85,8 +85,7 @@ closeBlock
 mustache
   // Parsing out the '&' escape token at AST level saves ~500 bytes after min due to the removal of one parser node.
   // This also allows for handler unification as all mustache node instances can utilize the same handler
-  : OPEN hash CLOSE -> yy.prepareMustache(yy.syntax.hash($2, yy.locInfo(@$), { yy, syntax: 'expr' }), [], undefined, $1, yy.stripFlags($1, $3), @$)
-  | OPEN expr expr* hash? CLOSE -> yy.prepareMustache($2, $3, $4, $1, yy.stripFlags($1, $5), @$)
+  : OPEN expr expr* hash? CLOSE -> yy.prepareMustache($2, $3, $4, $1, yy.stripFlags($1, $5), @$)
   | OPEN_UNESCAPED expr expr* hash? CLOSE_UNESCAPED -> yy.prepareMustache($2, $3, $4, $1, yy.stripFlags($1, $5), @$)
   ;
 
@@ -112,18 +111,11 @@ openPartialBlock
 
 expr
   : helperName -> $1
-  | exprHead -> $1
-  ;
-
-exprHead
-  : arrayLiteral -> $1
   | sexpr -> $1
   ;
 
-
 sexpr
-  : OPEN_SEXPR hash CLOSE_SEXPR -> yy.syntax.hash($2, yy.locInfo(@$), { yy, syntax: 'expr' })
-  | OPEN_SEXPR expr expr* hash? CLOSE_SEXPR {
+  : OPEN_SEXPR expr expr* hash? CLOSE_SEXPR {
     $$ = {
       type: 'SubExpression',
       path: $2,
@@ -139,10 +131,6 @@ hash
 
 hashSegment
   : ID EQUALS expr -> {type: 'HashPair', key: yy.id($1), value: $3, loc: yy.locInfo(@$)}
-  ;
-
-arrayLiteral
-  : OPEN_ARRAY expr* CLOSE_ARRAY -> yy.syntax.square($2, yy.locInfo(@$), { yy, syntax: 'expr' })
   ;
 
 blockParams
@@ -169,7 +157,7 @@ sep
   ;
 
 path
-  : exprHead sep pathSegments -> yy.preparePath(false, $1, $3, @$)
+  : sexpr sep pathSegments -> yy.preparePath(false, $1, $3, @$)
   | pathSegments -> yy.preparePath(false, false, $1, @$)
   ;
 

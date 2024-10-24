@@ -1,5 +1,5 @@
 
-%x mu emu com raw escl
+%x mu emu com raw
 
 %{
 
@@ -12,8 +12,8 @@ function strip(start, end) {
 LEFT_STRIP    "~"
 RIGHT_STRIP   "~"
 
-LOOKAHEAD           [=~}\s\/.)\]|]
-LITERAL_LOOKAHEAD   [~}\s)\]]
+LOOKAHEAD           [=~}\s\/.)|]
+LITERAL_LOOKAHEAD   [~}\s)]
 
 /*
 ID is the inverse of control characters.
@@ -73,18 +73,6 @@ ID    [^\s!"#%-,\.\/;->@\[-\^`\{-~]+/{LOOKAHEAD}
 <mu>"("                          return 'OPEN_SEXPR';
 <mu>")"                          return 'CLOSE_SEXPR';
 
-<mu>"[" {
-  if (yy.syntax.square === 'string') {
-    this.unput(yytext);
-    // escaped literal
-    this.begin('escl');
-  } else {
-    return 'OPEN_ARRAY';
-  }
-}
-<mu>"]"                          return 'CLOSE_ARRAY';
-
-
 <mu>"{{{{"                       { return 'OPEN_RAW_BLOCK'; }
 <mu>"}}}}"                       {
                                   this.popState();
@@ -133,12 +121,7 @@ ID    [^\s!"#%-,\.\/;->@\[-\^`\{-~]+/{LOOKAHEAD}
 
 <mu>{ID}                         return 'ID';
 
-<escl>'['('\\]'|[^\]])*']' {
-  yytext = yytext.replace(/\\([\\\]])/g,'$1');
-  this.popState();
-  return 'ID';
-}
-
+<mu>'['('\\]'|[^\]])*']'         yytext = yytext.replace(/\\([\\\]])/g,'$1'); return 'ID';
 <mu>.                            return 'INVALID';
 
 <INITIAL,mu><<EOF>>              return 'EOF';
