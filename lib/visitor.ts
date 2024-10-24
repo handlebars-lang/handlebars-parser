@@ -108,12 +108,12 @@ export default class Visitor {
   }
 
   MustacheStatement(mustache: ast.MustacheStatement): unknown {
-    this.callNode(mustache);
+    this.#visitCallNode(mustache);
     return;
   }
 
   Decorator(mustache: ast.Decorator): unknown {
-    this.callNode(mustache);
+    this.#visitCallNode(mustache);
     return;
   }
 
@@ -154,7 +154,7 @@ export default class Visitor {
    */
   SubExpression(sexpr: ast.CallNode): unknown;
   SubExpression(sexpr: ast.CallNode): unknown {
-    this.callNode(sexpr);
+    this.#visitCallNode(sexpr);
     return;
   }
 
@@ -202,14 +202,21 @@ export default class Visitor {
     return;
   }
 
-  callNode(callNode: ast.CallNode) {
-    this.acceptRequired(callNode, 'path');
-    this.acceptArray(callNode.params, callNode);
-    this.acceptField(callNode, 'hash');
+  #visitCallNode(
+    mustache:
+      | ast.SubExpression
+      | ast.MustacheStatement
+      | ast.Decorator
+      | ast.BlockStatement
+      | ast.DecoratorBlock
+  ) {
+    this.acceptRequired(mustache, 'path');
+    this.acceptArray(mustache.params, mustache);
+    this.acceptField(mustache, 'hash');
   }
 
   #visitBlock(block: ast.BlockStatement | ast.DecoratorBlock) {
-    this.callNode(block);
+    this.#visitCallNode(block);
 
     this.acceptField(block, 'program');
     this.acceptField(block, 'inverse');
