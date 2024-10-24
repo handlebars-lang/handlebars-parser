@@ -43,8 +43,29 @@ export class PrintVisitor extends Visitor {
     return out;
   }
 
+  callBody(callExpr: ast.CallNode) {
+    let params = callExpr.params,
+      paramStrings = [],
+      hash;
+
+    for (let i = 0, l = params.length; i < l; i++) {
+      paramStrings.push(this.accept(params[i]));
+    }
+
+    const paramString =
+      paramStrings.length === 0 ? '' : ' [' + paramStrings.join(', ') + ']';
+
+    const hashString = callExpr.hash ? ' ' + this.accept(callExpr.hash) : '';
+
+    return `${this.accept(callExpr.path)}${paramString}${hashString}`;
+  }
+
   MustacheStatement(mustache: ast.MustacheStatement) {
-    return this.pad('{{ ' + this.callNode(mustache) + ' }}');
+    if (mustache.params.length > 0 || mustache.hash) {
+      return this.pad('{{ ' + this.callBody(mustache) + ' }}');
+    } else {
+      return this.pad('{{ ' + this.accept(mustache.path) + ' }}');
+    }
   }
 
   Decorator(mustache: ast.Decorator) {
@@ -66,7 +87,7 @@ export class PrintVisitor extends Visitor {
       (block.type === 'DecoratorBlock' ? 'DIRECTIVE ' : '') + 'BLOCK:'
     );
     this.padding++;
-    out += this.pad(this.callNode(block));
+    out += this.pad(this.callBody(block));
     if (block.program) {
       out += this.pad('PROGRAM:');
       this.padding++;
@@ -129,21 +150,7 @@ export class PrintVisitor extends Visitor {
   }
 
   SubExpression(subExpression: ast.SubExpression) {
-    return this.callNode(subExpression);
-  }
-
-  callNode(sexpr: ast.CallNode) {
-    const params = sexpr.params;
-    const paramStrings = [];
-
-    for (let i = 0, l = params.length; i < l; i++) {
-      paramStrings.push(this.accept(params[i]));
-    }
-
-    const paramsString = '[' + paramStrings.join(', ') + ']';
-    const hashString = sexpr.hash ? ' ' + this.accept(sexpr.hash) : '';
-
-    return `${this.accept(sexpr.path)} ${paramsString}${hashString}`;
+    return this.callBody(subExpression);
   }
 
   PathExpression(id: ast.PathExpression) {
@@ -173,15 +180,22 @@ export class PrintVisitor extends Visitor {
     return 'NULL';
   }
 
-  Hash(hash: ast.Hash) {
-    let pairs = hash.pairs,
-      joinedPairs = [];
+  ArrayLiteral(array: ast.ArrayLiteral) {
+    return `Array[${array.items.map((item) => this.accept(item)).join(', ')}]`;
+  }
+
+  HashLiteral(hash: ast.HashLiteral) {
+    return `Hash{${this.hashPairs(hash.pairs)}}`;
+  }
+
+  hashPairs(pairs: ast.HashPair[]) {
+    const joinedPairs = [];
 
     for (let i = 0, l = pairs.length; i < l; i++) {
-      joinedPairs.push(this.accept(pairs[i]));
+      joinedPairs.push(this.HashPair(pairs[i]));
     }
 
-    return 'HASH{' + joinedPairs.join(' ') + '}';
+    return joinedPairs.join(' ');
   }
 
   HashPair(pair: ast.HashPair) {

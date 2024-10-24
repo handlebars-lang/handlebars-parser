@@ -11,12 +11,37 @@ import type {
 } from './types/types.js';
 import type * as ast from './types/ast.js';
 import { assert } from './utils.js';
-import type { ParseOptions } from './parse.js';
+import type { ParseOptions, SyntaxOptions } from './parse.js';
 
 export class ParserHelpers {
   #options: ParseOptions;
+  readonly syntax: SyntaxOptions;
+
   constructor(options: ParseOptions) {
     this.#options = options;
+
+    let squareSyntax;
+
+    if (typeof options?.syntax?.square === 'function') {
+      squareSyntax = options.syntax.square;
+    } else if (options?.syntax?.square === 'node') {
+      squareSyntax = arrayLiteralNode;
+    } else {
+      squareSyntax = 'string';
+    }
+
+    let hashSyntax;
+
+    if (typeof options?.syntax?.hash === 'function') {
+      hashSyntax = options.syntax.hash;
+    } else {
+      hashSyntax = hashLiteralNode;
+    }
+
+    this.syntax = {
+      square: squareSyntax,
+      hash: hashSyntax,
+    };
   }
 
   locInfo = (locInfo: LocInfo) => {
@@ -298,4 +323,26 @@ export class SourceLocation implements ast.SourceLocation {
       column: locInfo.last_column,
     };
   }
+}
+
+function arrayLiteralNode(
+  array: ast.Expr[],
+  loc: ast.SourceLocation
+): ast.ArrayLiteral {
+  return {
+    type: 'ArrayLiteral',
+    items: array,
+    loc,
+  };
+}
+
+function hashLiteralNode(
+  hash: ast.Hash,
+  loc: ast.SourceLocation
+): ast.HashLiteral {
+  return {
+    type: 'HashLiteral',
+    pairs: hash.pairs,
+    loc,
+  };
 }

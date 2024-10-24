@@ -47,19 +47,59 @@ export function equalsJSON(actual, expected, msg) {
   }
 }
 
-export function equalsAst(source, expected, msg) {
-  const ast = astFor(source);
+export function equalsAst(source, expected, options) {
+  const msg = typeof options === 'string' ? options : options?.msg;
+  const parserOptions =
+    typeof options === 'string' ? undefined : options?.options;
+  const ast = astFor(source, parserOptions);
+  const padding = ` `.repeat(8);
 
   if (ast !== `${expected}\n`) {
+    let sourceMsg = `${padding}Source: ${source}`;
+    if (parserOptions) {
+      let formattedOptions = printOptions(parserOptions)
+        .split('\n')
+        .join(`\n${padding}`);
+
+      sourceMsg += `\n${padding}Options: ${formattedOptions}`;
+    }
     const error = new AssertError(
-      `\n       Source: ${source}` + (msg ? `\n${msg}` : ''),
-      equals
+      `\n${sourceMsg}${msg ? `\n${msg}` : ''}\n`,
+      equalsAst
     );
 
     error.expected = expected;
     error.actual = ast;
     throw error;
   }
+}
+
+function printOptions(options) {
+  if (!options) {
+    return '';
+  }
+
+  let outOptions = {};
+
+  if (options.srcName) {
+    outOptions.srcName = options.srcName;
+  }
+  if (options.syntax) {
+    outOptions.syntax = {};
+
+    if (options.syntax.hash) {
+      outOptions.syntax.hash = `{function ${
+        options.syntax.hash.name ?? 'anonymous'
+      }}`;
+    }
+    if (options.syntax.square) {
+      outOptions.syntax.square = `{function ${
+        options.syntax.square.name ?? 'anonymous'
+      }}`;
+    }
+  }
+
+  return JSON.stringify(outOptions, null, 2);
 }
 
 /**
@@ -113,8 +153,8 @@ export function shouldThrow(callback, type, msg) {
     throw new AssertError('Expected a thrown exception', shouldThrow);
   }
 }
-function astFor(template) {
-  let ast = parse(template);
+function astFor(template, options = {}) {
+  let ast = parse(template, options);
   return print(ast);
 }
 

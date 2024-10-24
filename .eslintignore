@@ -1,3 +1,4 @@
 /dist/
 /lib/parser.js
 /src/
+*.d.ts

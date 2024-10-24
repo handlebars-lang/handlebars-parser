@@ -62,7 +62,7 @@ describe('Visitor', function () {
 
         let ast = parse('{{foo foo="foo"}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ p%foo [] HASH{foo=n%42} }}\n');
+        equals(print(ast), '{{ p%foo HASH{foo=n%42} }}\n');
       });
       it('should treat undefined resonse as identity', function () {
         let visitor = new Visitor();
@@ -70,7 +70,7 @@ describe('Visitor', function () {
 
         let ast = parse('{{foo foo=42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ p%foo [] HASH{foo=n%42} }}\n');
+        equals(print(ast), '{{ p%foo HASH{foo=n%42} }}\n');
       });
       it('should remove false responses', function () {
         let visitor = new Visitor();
@@ -82,7 +82,7 @@ describe('Visitor', function () {
 
         let ast = parse('{{foo foo=42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ p%foo [] }}\n');
+        equals(print(ast), '{{ p%foo }}\n');
       });
       it('should throw when removing required values', function () {
         shouldThrow(
@@ -150,7 +150,7 @@ describe('Visitor', function () {
 
         let ast = parse('{{foo 42}}');
         visitor.accept(ast);
-        equals(print(ast), '{{ p%foo [] }}\n');
+        equals(print(ast), '{{ p%foo }}\n');
       });
     });
   });

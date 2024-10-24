@@ -8,44 +8,92 @@ describe('parser', function () {
   }
 
   it('parses simple mustaches', function () {
-    equalsAst('{{123}}', '{{ n%123 [] }}');
-    equalsAst('{{"foo"}}', '{{ "foo" [] }}');
-    equalsAst('{{false}}', '{{ b%false [] }}');
-    equalsAst('{{true}}', '{{ b%true [] }}');
-    equalsAst('{{foo}}', '{{ p%foo [] }}');
-    equalsAst('{{foo?}}', '{{ p%foo? [] }}');
-    equalsAst('{{foo_}}', '{{ p%foo_ [] }}');
-    equalsAst('{{foo-}}', '{{ p%foo- [] }}');
-    equalsAst('{{foo:}}', '{{ p%foo: [] }}');
+    equalsAst('{{123}}', '{{ n%123 }}');
+    equalsAst('{{"foo"}}', '{{ "foo" }}');
+    equalsAst('{{false}}', '{{ b%false }}');
+    equalsAst('{{true}}', '{{ b%true }}');
+    equalsAst('{{foo}}', '{{ p%foo }}');
+    equalsAst('{{foo?}}', '{{ p%foo? }}');
+    equalsAst('{{foo_}}', '{{ p%foo_ }}');
+    equalsAst('{{foo-}}', '{{ p%foo- }}');
+    equalsAst('{{foo:}}', '{{ p%foo: }}');
   });
 
   it('parses simple mustaches with data', function () {
-    equalsAst('{{@foo}}', '{{ p%@foo [] }}');
+    equalsAst('{{@foo}}', '{{ p%@foo }}');
   });
 
   it('parses simple mustaches with data paths', function () {
-    equalsAst('{{@../foo}}', '{{ p%@foo [] }}');
+    equalsAst('{{@../foo}}', '{{ p%@foo }}');
   });
 
   it('parses mustaches with paths', function () {
-    equalsAst('{{foo/bar}}', '{{ p%foo/bar [] }}');
-    equalsAst('{{foo.bar}}', '{{ p%foo/bar [] }}');
-    equalsAst('{{foo.#bar}}', '{{ p%foo/#bar [] }}');
-    equalsAst('{{@foo.#bar}}', '{{ p%@foo/#bar [] }}');
+    equalsAst('{{foo/bar}}', '{{ p%foo/bar }}');
+    equalsAst('{{foo.bar}}', '{{ p%foo/bar }}');
+    equalsAst('{{foo.#bar}}', '{{ p%foo/#bar }}');
+    equalsAst('{{@foo.#bar}}', '{{ p%@foo/#bar }}');
 
-    equalsAst('{{this/foo}}', '{{ p%foo [] }}');
-    equalsAst('{{this.foo}}', '{{ p%this.foo [] }}');
-    equalsAst('{{this.#foo}}', '{{ p%this.#foo [] }}');
+    equalsAst('{{this/foo}}', '{{ p%foo }}');
+    equalsAst('{{this.foo}}', '{{ p%this.foo }}');
+    equalsAst('{{this.#foo}}', '{{ p%this.#foo }}');
   });
 
   it('parses mustaches with - in a path', function () {
-    equalsAst('{{foo-bar}}', '{{ p%foo-bar [] }}');
+    equalsAst('{{foo-bar}}', '{{ p%foo-bar }}');
   });
+
   it('parses mustaches with escaped [] in a path', function () {
-    equalsAst('{{[foo[\\]]}}', '{{ p%foo[] [] }}');
+    equalsAst('{{[foo[\\]]}}', '{{ p%foo[] }}');
   });
+
   it('parses escaped \\\\ in path', function () {
-    equalsAst('{{[foo\\\\]}}', '{{ p%foo\\ [] }}');
+    equalsAst('{{[foo\\\\]}}', '{{ p%foo\\ }}');
+  });
+
+  it('parses hash literals', function () {
+    equalsAst('{{(foo=bar)}}', '{{ Hash{foo=p%bar} }}');
+    equalsAst('{{(foo=bar)}}', '{{ p%@hello }}', {
+      options: {
+        syntax: {
+          hash: (hash, loc, { yy }) => {
+            return yy.preparePath(
+              true,
+              false,
+              [{ part: yy.id('hello'), original: 'hello' }],
+              loc
+            );
+          },
+        },
+      },
+    });
+  });
+
+  it('parses array literals', function () {
+    equalsAst('{{[foo bar]}}', '{{ Array[p%foo, p%bar] }}', {
+      options: { syntax: { square: 'node' } },
+    });
+
+    equalsAst('{{[foo bar].baz}}', '{{ p%[Array[p%foo, p%bar]]/baz }}', {
+      options: { syntax: { square: 'node' } },
+    });
+  });
+
+  it('parses mustaches that are hash literals', function () {
+    equalsAst('{{foo=bar}}', '{{ Hash{foo=p%bar} }}');
+    equalsAst('{{foo=bar}}', `{{ "HASH{foo=p%bar}" }}`, {
+      options: {
+        syntax: {
+          hash: (hash, loc) => {
+            return {
+              type: 'StringLiteral',
+              original: print(hash),
+              value: print(hash),
+              loc,
+            };
+          },
+        },
+      },
+    });
   });
 
   it('parses mustaches with parameters', function () {
@@ -76,9 +124,10 @@ describe('parser', function () {
   });
 
   it('parses mustaches with undefined and null paths', function () {
-    equalsAst('{{undefined}}', '{{ UNDEFINED [] }}');
-    equalsAst('{{null}}', '{{ NULL [] }}');
+    equalsAst('{{undefined}}', '{{ UNDEFINED }}');
+    equalsAst('{{null}}', '{{ NULL }}');
   });
+
   it('parses mustaches with undefined and null parameters', function () {
     equalsAst('{{foo undefined null}}', '{{ p%foo [UNDEFINED, NULL] }}');
   });
@@ -88,22 +137,22 @@ describe('parser', function () {
   });
 
   it('parses mustaches with hash arguments', function () {
-    equalsAst('{{foo bar=baz}}', '{{ p%foo [] HASH{bar=p%baz} }}');
-    equalsAst('{{foo bar=1}}', '{{ p%foo [] HASH{bar=n%1} }}');
-    equalsAst('{{foo bar=true}}', '{{ p%foo [] HASH{bar=b%true} }}');
-    equalsAst('{{foo bar=false}}', '{{ p%foo [] HASH{bar=b%false} }}');
-    equalsAst('{{foo bar=@baz}}', '{{ p%foo [] HASH{bar=p%@baz} }}');
+    equalsAst('{{foo bar=baz}}', '{{ p%foo HASH{bar=p%baz} }}');
+    equalsAst('{{foo bar=1}}', '{{ p%foo HASH{bar=n%1} }}');
+    equalsAst('{{foo bar=true}}', '{{ p%foo HASH{bar=b%true} }}');
+    equalsAst('{{foo bar=false}}', '{{ p%foo HASH{bar=b%false} }}');
+    equalsAst('{{foo bar=@baz}}', '{{ p%foo HASH{bar=p%@baz} }}');
 
     equalsAst(
       '{{foo bar=baz bat=bam}}',
-      '{{ p%foo [] HASH{bar=p%baz bat=p%bam} }}'
+      '{{ p%foo HASH{bar=p%baz bat=p%bam} }}'
     );
     equalsAst(
       '{{foo bar=baz bat="bam"}}',
-      '{{ p%foo [] HASH{bar=p%baz bat="bam"} }}'
+      '{{ p%foo HASH{bar=p%baz bat="bam"} }}'
     );
 
-    equalsAst("{{foo bat='bam'}}", '{{ p%foo [] HASH{bat="bam"} }}');
+    equalsAst("{{foo bat='bam'}}", '{{ p%foo HASH{bat="bam"} }}');
 
     equalsAst(
       '{{foo omg bar=baz bat="bam"}}',
@@ -124,7 +173,7 @@ describe('parser', function () {
   });
 
   it('parses contents followed by a mustache', function () {
-    equalsAst('foo bar {{baz}}', "CONTENT[ 'foo bar ' ]\n{{ p%baz [] }}");
+    equalsAst('foo bar {{baz}}', "CONTENT[ 'foo bar ' ]\n{{ p%baz }}");
   });
 
   it('parses a partial', function () {
@@ -191,74 +240,71 @@ describe('parser', function () {
   it('parses an inverse section', function () {
     equalsAst(
       '{{#foo}} bar {{^}} baz {{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    CONTENT[ ' baz ' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    CONTENT[ ' baz ' ]"
     );
   });
 
   it('parses an inverse (else-style) section', function () {
     equalsAst(
       '{{#foo}} bar {{else}} baz {{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    CONTENT[ ' baz ' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    CONTENT[ ' baz ' ]"
     );
   });
 
   it('parses multiple inverse sections', function () {
     equalsAst(
       '{{#foo}} bar {{else if bar}}{{else}} baz {{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    BLOCK:\n      p%if [p%bar]\n      PROGRAM:\n      {{^}}\n        CONTENT[ ' baz ' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    BLOCK:\n      p%if [p%bar]\n      PROGRAM:\n      {{^}}\n        CONTENT[ ' baz ' ]"
     );
   });
 
   it('parses empty blocks', function () {
-    equalsAst('{{#foo}}{{/foo}}', 'BLOCK:\n  p%foo []\n  PROGRAM:');
+    equalsAst('{{#foo}}{{/foo}}', 'BLOCK:\n  p%foo\n  PROGRAM:');
   });
 
   it('parses empty blocks with empty inverse section', function () {
-    equalsAst(
-      '{{#foo}}{{^}}{{/foo}}',
-      'BLOCK:\n  p%foo []\n  PROGRAM:\n  {{^}}'
-    );
+    equalsAst('{{#foo}}{{^}}{{/foo}}', 'BLOCK:\n  p%foo\n  PROGRAM:\n  {{^}}');
   });
 
   it('parses empty blocks with empty inverse (else-style) section', function () {
     equalsAst(
       '{{#foo}}{{else}}{{/foo}}',
-      'BLOCK:\n  p%foo []\n  PROGRAM:\n  {{^}}'
+      'BLOCK:\n  p%foo\n  PROGRAM:\n  {{^}}'
     );
   });
 
   it('parses non-empty blocks with empty inverse section', function () {
     equalsAst(
       '{{#foo}} bar {{^}}{{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}"
     );
   });
 
   it('parses non-empty blocks with empty inverse (else-style) section', function () {
     equalsAst(
       '{{#foo}} bar {{else}}{{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}"
     );
   });
 
   it('parses empty blocks with non-empty inverse section', function () {
     equalsAst(
       '{{#foo}}{{^}} bar {{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n  {{^}}\n    CONTENT[ ' bar ' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n  {{^}}\n    CONTENT[ ' bar ' ]"
     );
   });
 
   it('parses empty blocks with non-empty inverse (else-style) section', function () {
     equalsAst(
       '{{#foo}}{{else}} bar {{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n  {{^}}\n    CONTENT[ ' bar ' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n  {{^}}\n    CONTENT[ ' bar ' ]"
     );
   });
 
   it('parses a standalone inverse section', function () {
     equalsAst(
       '{{^foo}}bar{{/foo}}',
-      "BLOCK:\n  p%foo []\n  {{^}}\n    CONTENT[ 'bar' ]"
+      "BLOCK:\n  p%foo\n  {{^}}\n    CONTENT[ 'bar' ]"
     );
   });
 
@@ -271,74 +317,71 @@ describe('parser', function () {
   it('parses block with block params', function () {
     equalsAst(
       '{{#foo as |bar baz|}}content{{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]"
     );
   });
 
   it('parses mustaches with sub-expressions as the callable', function () {
-    equalsAst('{{(my-helper foo)}}', '{{ p%my-helper [p%foo] [] }}');
+    equalsAst('{{(my-helper foo)}}', '{{ (p%my-helper [p%foo]) }}');
   });
 
   it('parses mustaches with sub-expressions as the callable (with args)', function () {
-    equalsAst('{{(my-helper foo) bar}}', '{{ p%my-helper [p%foo] [p%bar] }}');
+    equalsAst('{{(my-helper foo) bar}}', '{{ (p%my-helper [p%foo]) [p%bar] }}');
   });
 
   it('parses sub-expressions with a sub-expression as the callable', function () {
-    equalsAst('{{((my-helper foo))}}', '{{ p%my-helper [p%foo] [] [] }}');
+    equalsAst('{{((my-helper foo))}}', '{{ ((p%my-helper [p%foo])) }}');
   });
 
   it('parses sub-expressions with a sub-expression as the callable (with args)', function () {
     equalsAst(
       '{{((my-helper foo) bar)}}',
-      '{{ p%my-helper [p%foo] [p%bar] [] }}'
+      '{{ ((p%my-helper [p%foo]) [p%bar]) }}'
     );
   });
 
   it('parses arguments with a sub-expression as the callable (with args)', function () {
     equalsAst(
       '{{my-helper ((foo) bar) baz=((foo bar))}}',
-      '{{ p%my-helper [p%foo [] [p%bar]] HASH{baz=p%foo [p%bar] []} }}'
+      '{{ p%my-helper [((p%foo) [p%bar])] HASH{baz=((p%foo [p%bar]))} }}'
     );
   });
 
   it('parses paths with sub-expressions as the root', function () {
-    equalsAst(
-      '{{(my-helper foo).bar}}',
-      '{{ p%[p%my-helper [p%foo]]/bar [] }}'
-    );
+    equalsAst('{{(my-helper foo).bar}}', '{{ p%[(p%my-helper [p%foo])]/bar }}');
   });
 
   it('parses paths with sub-expressions as the root as a callable', function () {
     equalsAst(
       '{{((my-helper foo).bar baz)}}',
-      '{{ p%[p%my-helper [p%foo]]/bar [p%baz] [] }}'
+      '{{ (p%[(p%my-helper [p%foo])]/bar [p%baz]) }}'
     );
   });
 
   it('parses paths with sub-expressions as the root as an argument', function () {
     equalsAst(
       '{{(foo (my-helper bar).baz)}}',
-      '{{ p%foo [p%[p%my-helper [p%bar]]/baz] [] }}'
+      '{{ (p%foo [p%[(p%my-helper [p%bar])]/baz]) }}'
     );
   });
 
   it('parses paths with sub-expressions as the root as a named argument', function () {
     equalsAst(
       '{{(foo bar=(my-helper baz).qux)}}',
-      '{{ p%foo [] HASH{bar=p%[p%my-helper [p%baz]]/qux} [] }}'
+      '{{ (p%foo HASH{bar=p%[(p%my-helper [p%baz])]/qux}) }}'
     );
   });
 
   it('parses inverse block with block params', function () {
     equalsAst(
       '{{^foo as |bar baz|}}content{{/foo}}',
-      "BLOCK:\n  p%foo []\n  {{^}}\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]"
+      "BLOCK:\n  p%foo\n  {{^}}\n    BLOCK PARAMS: [ bar baz ]\n    CONTENT[ 'content' ]"
     );
   });
   it('parses chained inverse block with block params', function () {
     equalsAst(
       '{{#foo}}{{else foo as |bar baz|}}content{{/foo}}',
-      "BLOCK:\n  p%foo []\n  PROGRAM:\n  {{^}}\n    BLOCK:\n      p%foo []\n      PROGRAM:\n        BLOCK PARAMS: [ bar baz ]\n        CONTENT[ 'content' ]"
+      "BLOCK:\n  p%foo\n  PROGRAM:\n  {{^}}\n    BLOCK:\n      p%foo\n      PROGRAM:\n        BLOCK PARAMS: [ bar baz ]\n        CONTENT[ 'content' ]"
     );
   });
   it("raises if there's a Parse error", function () {
@@ -445,13 +488,10 @@ describe('parser', function () {
 
   describe('directives', function () {
     it('should parse block directives', function () {
-      equalsAst(
-        '{{#* foo}}{{/foo}}',
-        'DIRECTIVE BLOCK:\n  p%foo []\n  PROGRAM:'
-      );
+      equalsAst('{{#* foo}}{{/foo}}', 'DIRECTIVE BLOCK:\n  p%foo\n  PROGRAM:');
     });
     it('should parse directives', function () {
-      equalsAst('{{* foo}}', '{{ DIRECTIVE p%foo [] }}');
+      equalsAst('{{* foo}}', '{{ DIRECTIVE p%foo }}');
     });
     it('should fail if directives have inverse', function () {
       shouldThrow(
