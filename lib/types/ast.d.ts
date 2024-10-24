@@ -5,8 +5,43 @@ export type PrimitiveLiteral =
   | NumberLiteral
   | UndefinedLiteral
   | NullLiteral;
+export type Statement =
+  | MustacheStatement
+  | Decorator
+  | BlockStatement
+  | PartialStatement
+  | ContentStatement
+  | CommentStatement;
 export type CollectionLiteral = HashLiteral | ArrayLiteral;
 export type Expr = SubExpression | PathExpression | Literal;
+export type Internal = Hash | HashPair;
+
+export type VisitableNode =
+  | Program
+  | MustacheStatement
+  | Decorator
+  | BlockStatement
+  | DecoratorBlock
+  | PartialStatement
+  | PartialBlockStatement
+  | ContentStatement
+  | CommentStatement
+  | SubExpression
+  | PathExpression
+  | Literal
+  | Internal;
+
+export type VisitableChildren = {
+  [P in VisitableNode['type']]: Extract<
+    VisitableNode,
+    { type: P }
+  > extends infer N
+    ? {
+        [K in keyof N]: N[K] extends VisitableNode ? K : never;
+      }[keyof N] &
+        string
+    : never;
+};
 
 export interface HasLocation {
   loc: SourceLocation;
@@ -28,15 +63,16 @@ export interface Position {
 }
 
 export interface Program extends Node {
+  type: 'Program';
   body: Statement[];
   blockParams?: string[];
   /** @compat */
   strip: {};
 }
 
-export interface Statement extends Node {}
+export interface BaseStatement extends Node {}
 
-export interface MustacheStatement extends Statement, WithArgsNode {
+export interface MustacheStatement extends BaseStatement, WithArgsNode {
   type: 'MustacheStatement';
   path: CollectionLiteral | SubExpression | PathExpression;
   escaped: boolean;
@@ -45,7 +81,7 @@ export interface MustacheStatement extends Statement, WithArgsNode {
 
 export interface Decorator extends MustacheStatement {}
 
-export interface BlockStatement extends Statement, WithArgsNode {
+export interface BlockStatement extends BaseStatement, WithArgsNode {
   type: 'BlockStatement';
   /**
    * This is very restricted compared to other call nodes
@@ -62,14 +98,14 @@ export interface BlockStatement extends Statement, WithArgsNode {
 
 export interface DecoratorBlock extends BlockStatement {}
 
-export interface PartialStatement extends Statement, WithArgsNode {
+export interface PartialStatement extends BaseStatement, WithArgsNode {
   type: 'PartialStatement';
   name: PathExpression | SubExpression;
   indent: string;
   strip: StripFlags;
 }
 
-export interface PartialBlockStatement extends Statement, WithArgsNode {
+export interface PartialBlockStatement extends BaseStatement, WithArgsNode {
   type: 'PartialBlockStatement';
   name: PathExpression | SubExpression;
   program: Program;
@@ -77,13 +113,13 @@ export interface PartialBlockStatement extends Statement, WithArgsNode {
   closeStrip: StripFlags;
 }
 
-export interface ContentStatement extends Statement {
+export interface ContentStatement extends BaseStatement {
   type: 'ContentStatement';
   value: string;
   original: StripFlags;
 }
 
-export interface CommentStatement extends Statement {
+export interface CommentStatement extends BaseStatement {
   type: 'CommentStatement';
   value: string;
   strip: StripFlags;
