@@ -8,18 +8,25 @@
     "baseUrl": "lib",
     "rootDir": "lib",
     "esModuleInterop": true,
-    "moduleResolution": "node",
-
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
     // Enhance Strictness
     "strict": true,
     "suppressImplicitAnyIndexErrors": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-
     "newLine": "LF",
     "allowJs": true
   },
-  "include": ["lib/**/*.js"],
-  "exclude": ["dist", "node_modules", ".vscode"]
+  "include": [
+    "lib/**/*.js",
+    "lib/**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "lib/parser.js",
+    "node_modules",
+    ".vscode"
+  ]
 }

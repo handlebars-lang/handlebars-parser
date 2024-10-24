@@ -1,4 +1,4 @@
-import { parse, print } from '../dist/esm';
+import { parse, print } from '../dist/esm/index.js';
 
 let AssertError;
 if (Error.captureStackTrace) {
@@ -23,7 +23,8 @@ if (Error.captureStackTrace) {
 export function equals(actual, expected, msg) {
   if (actual !== expected) {
     throw new AssertError(
-      `\n       Actual: ${actual}     Expected: ${expected}` + (msg ? `\n${msg}` : ''),
+      `\n       Actual: ${actual}     Expected: ${expected}` +
+        (msg ? `\n${msg}` : ''),
       equals
     );
   }
@@ -34,10 +35,10 @@ export function equalsAst(source, expected, msg) {
 
   if (ast !== `${expected}\n`) {
     throw new AssertError(
-      `\n       Source: ${source}\n\n       Actual: ${ast}     Expected: ${expected}\n` + (msg ? `\n${msg}` : ''),
+      `\n       Source: ${source}\n\n       Actual: ${ast}     Expected: ${expected}\n` +
+        (msg ? `\n${msg}` : ''),
       equals
     );
-
   }
 }
 
@@ -52,28 +53,56 @@ export function shouldThrow(callback, type, msg) {
     failed = true;
   } catch (caught) {
     if (type && !(caught instanceof type)) {
-      throw new AssertError('Type failure: ' + caught);
-    }
-    if (
-      msg &&
-      !(msg.test ? msg.test(caught.message) : msg === caught.message)
-    ) {
-      throw new AssertError(
-        'Throw mismatch: Expected ' +
-        caught.message +
-        ' to match ' +
-        msg +
-        '\n\n' +
-        caught.stack,
+      const error = new AssertError(
+        `An error was thrown, but it had the wrong type. Original error:\n${snippet(
+          caught.stack
+        )}`,
         shouldThrow
       );
+      error.expected = type.name;
+      error.actual = caught.constructor.name;
+      throw error;
+    }
+
+    if (msg) {
+      if (typeof msg === 'string') {
+        if (msg !== caught.message) {
+          const error = new AssertError(
+            `Error message didn't match.\n\n${snippet(caught.stack)}` +
+              shouldThrow
+          );
+          error.expected = msg;
+          error.actual = caught.message;
+          throw error;
+        }
+      } else if (msg instanceof RegExp) {
+        if (!msg.test(caught.message)) {
+          const error = new AssertError(
+            `Error message didn't match.\n\n${snippet(caught.stack)}` +
+              shouldThrow
+          );
+          error.expected = msg;
+          error.actual = caught.message;
+          throw error;
+        }
+      }
     }
   }
+
   if (failed) {
-    throw new AssertError('It failed to throw', shouldThrow);
+    throw new AssertError('Expected a thrown exception', shouldThrow);
   }
 }
-  function astFor(template) {
-    let ast = parse(template);
-    return print(ast);
-  }
+function astFor(template) {
+  let ast = parse(template);
+  return print(ast);
+}
+
+function snippet(string) {
+  return string
+    .split('\n')
+    .map(function (line) {
+      return '      | ' + line;
+    })
+    .join('\n');
+}
