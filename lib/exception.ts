@@ -1,4 +1,4 @@
-import type { BaseNode } from './types/types.d.ts';
+import type { HasLocation } from './types/ast.js';
 
 export default class Exception extends Error {
   readonly lineNumber: number | undefined;
@@ -8,7 +8,7 @@ export default class Exception extends Error {
 
   readonly description: string | undefined;
 
-  constructor(message: string, node?: BaseNode) {
+  constructor(message: string, node?: HasLocation) {
     const loc = node?.loc;
     let line;
     let endLineNumber;

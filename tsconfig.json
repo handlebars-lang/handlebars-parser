@@ -17,10 +17,11 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "newLine": "LF",
-    "allowJs": true
+    "allowJs": true,
   },
   "include": [
     "lib/**/*.js",
+    "lib/**/*.ts",
     "lib/**/*.d.ts"
   ],
   "exclude": [

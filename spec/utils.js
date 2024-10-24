@@ -22,11 +22,28 @@ if (Error.captureStackTrace) {
  */
 export function equals(actual, expected, msg) {
   if (actual !== expected) {
-    throw new AssertError(
-      `\n       Actual: ${actual}     Expected: ${expected}` +
-        (msg ? `\n${msg}` : ''),
+    const error = new AssertError(
+      msg ?? `Expected actual to equal expected.`,
       equals
     );
+    error.expected = expected;
+    error.actual = actual;
+    throw error;
+  }
+}
+
+export function equalsJSON(actual, expected, msg) {
+  const actualJSON = JSON.stringify(actual, null, 2);
+  const expectedJSON = JSON.stringify(expected, null, 2);
+
+  if (actualJSON !== expectedJSON) {
+    const error = new AssertError(
+      msg ?? `Expected equivalent JSON serialization.`,
+      equalsJSON
+    );
+    error.expected = expectedJSON;
+    error.actual = actualJSON;
+    throw error;
   }
 }
 

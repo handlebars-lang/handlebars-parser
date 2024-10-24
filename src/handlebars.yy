@@ -64,7 +64,7 @@ openInverseChain
   ;
 
 inverseAndProgram
-  : INVERSE program -> { strip: yy.stripFlags($1, $1), program: $2 }
+  : INVERSE program -> { strip: yy.stripFlags($1, $1), program: $2, loc: yy.locInfo(@$) }
   ;
 
 inverseChain
@@ -73,13 +73,13 @@ inverseChain
         program = yy.prepareProgram([inverse], $2.loc);
     program.chained = true;
 
-    $$ = { strip: $1.strip, program: program, chain: true };
+    $$ = { strip: $1.strip, program: program, chain: true, loc: yy.locInfo(@$) };
   }
   | inverseAndProgram -> $1
   ;
 
 closeBlock
-  : OPEN_ENDBLOCK helperName CLOSE -> {path: $2, strip: yy.stripFlags($1, $3)}
+  : OPEN_ENDBLOCK helperName CLOSE -> {path: $2, strip: yy.stripFlags($1, $3), loc: yy.locInfo(@$)}
   ;
 
 mustache
