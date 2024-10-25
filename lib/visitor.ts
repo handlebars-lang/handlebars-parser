@@ -108,12 +108,12 @@ export default class Visitor {
   }
 
   MustacheStatement(mustache: ast.MustacheStatement): unknown {
-    this.#visitCallNode(mustache);
+    this.callNode(mustache);
     return;
   }
 
   Decorator(mustache: ast.Decorator): unknown {
-    this.#visitCallNode(mustache);
+    this.callNode(mustache);
     return;
   }
 
@@ -146,8 +146,15 @@ export default class Visitor {
     return;
   }
 
-  SubExpression(sexpr: ast.SubExpression): unknown {
-    this.#visitCallNode(sexpr);
+  SubExpression(sexpr: ast.SubExpression): unknown;
+  /**
+   * Passing a `CallNode` to `SubExpression` is deprecated.
+   *
+   * @deprecated Call {@linkcode callNode} instead of SubExpression if you aren't passing a SubExpression.
+   */
+  SubExpression(sexpr: ast.CallNode): unknown;
+  SubExpression(sexpr: ast.CallNode): unknown {
+    this.callNode(sexpr);
     return;
   }
 
@@ -195,21 +202,14 @@ export default class Visitor {
     return;
   }
 
-  #visitCallNode(
-    mustache:
-      | ast.SubExpression
-      | ast.MustacheStatement
-      | ast.Decorator
-      | ast.BlockStatement
-      | ast.DecoratorBlock
-  ) {
-    this.acceptRequired(mustache, 'path');
-    this.acceptArray(mustache.params, mustache);
-    this.acceptField(mustache, 'hash');
+  callNode(callNode: ast.CallNode) {
+    this.acceptRequired(callNode, 'path');
+    this.acceptArray(callNode.params, callNode);
+    this.acceptField(callNode, 'hash');
   }
 
   #visitBlock(block: ast.BlockStatement | ast.DecoratorBlock) {
-    this.#visitCallNode(block);
+    this.callNode(block);
 
     this.acceptField(block, 'program');
     this.acceptField(block, 'inverse');

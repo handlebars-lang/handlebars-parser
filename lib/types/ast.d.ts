@@ -15,6 +15,12 @@ export type Statement =
 export type CollectionLiteral = HashLiteral | ArrayLiteral;
 export type Expr = SubExpression | PathExpression | Literal;
 export type Internal = Hash | HashPair;
+export type CallNode =
+  | SubExpression
+  | MustacheStatement
+  | Decorator
+  | BlockStatement
+  | DecoratorBlock;
 
 export type VisitableNode =
   | Program
@@ -81,8 +87,7 @@ export interface MustacheStatement extends BaseStatement, WithArgsNode {
 
 export interface Decorator extends MustacheStatement {}
 
-export interface BlockStatement extends BaseStatement, WithArgsNode {
-  type: 'BlockStatement';
+export interface BaseBlockStatement extends BaseStatement, WithArgsNode {
   /**
    * This is very restricted compared to other call nodes
    * because the opening path must be repeated as part of
@@ -96,7 +101,13 @@ export interface BlockStatement extends BaseStatement, WithArgsNode {
   closeStrip: StripFlags;
 }
 
-export interface DecoratorBlock extends BlockStatement {}
+export interface BlockStatement extends BaseBlockStatement {
+  type: 'BlockStatement';
+}
+
+export interface DecoratorBlock extends BaseBlockStatement {
+  type: 'DecoratorBlock';
+}
 
 export interface PartialStatement extends BaseStatement, WithArgsNode {
   type: 'PartialStatement';
@@ -135,6 +146,7 @@ export interface SubExpression extends BaseExpression, WithArgsNode {
 export interface PathExpression extends BaseExpression {
   type: 'PathExpression';
   data: boolean;
+  this: boolean;
   depth: number;
   parts: (string | SubExpression)[];
   head: SubExpression | string;

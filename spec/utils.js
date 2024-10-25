@@ -51,11 +51,14 @@ export function equalsAst(source, expected, msg) {
   const ast = astFor(source);
 
   if (ast !== `${expected}\n`) {
-    throw new AssertError(
-      `\n       Source: ${source}\n\n       Actual: ${ast}     Expected: ${expected}\n` +
-        (msg ? `\n${msg}` : ''),
+    const error = new AssertError(
+      `\n       Source: ${source}` + (msg ? `\n${msg}` : ''),
       equals
     );
+
+    error.expected = expected;
+    error.actual = ast;
+    throw error;
   }
 }
 
