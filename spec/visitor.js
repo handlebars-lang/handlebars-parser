@@ -98,7 +98,7 @@ describe('Visitor', function () {
             visitor.accept(ast);
           },
           Exception,
-          'MustacheStatement requires path'
+          'Visitor removed `path` (1:2) from MustacheStatement, but `path` is required - 1:0'
         );
       });
       it('should throw when returning non-node responses', function () {
@@ -115,7 +115,7 @@ describe('Visitor', function () {
             visitor.accept(ast);
           },
           Exception,
-          'Unexpected node type "undefined" found when accepting path on MustacheStatement'
+          `Unexpected visitor return value (no 'type' property) when accepting path on MustacheStatement - 1:2`
         );
       });
     });

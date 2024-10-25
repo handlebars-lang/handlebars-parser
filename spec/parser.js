@@ -1,5 +1,5 @@
 import { parse, print } from '../dist/esm/index.js';
-import { equals, equalsAst, shouldThrow } from './utils.js';
+import { equals, equalsAst, equalsJSON, shouldThrow } from './utils.js';
 
 describe('parser', function () {
   function astFor(template) {
@@ -516,26 +516,17 @@ describe('parser', function () {
     );
 
     // We really need a deep equals but for now this should be stable...
-    equals(
-      JSON.stringify(p.loc),
-      JSON.stringify({
-        start: { line: 1, column: 0 },
-        end: { line: 7, column: 4 },
-      })
-    );
-    equals(
-      JSON.stringify(p.body[1].program.loc),
-      JSON.stringify({
-        start: { line: 2, column: 13 },
-        end: { line: 4, column: 7 },
-      })
-    );
-    equals(
-      JSON.stringify(p.body[1].inverse.loc),
-      JSON.stringify({
-        start: { line: 4, column: 15 },
-        end: { line: 6, column: 5 },
-      })
-    );
+    equalsJSON(p.loc, {
+      start: { line: 1, column: 0 },
+      end: { line: 7, column: 4 },
+    });
+    equalsJSON(p.body[1].program.loc, {
+      start: { line: 2, column: 13 },
+      end: { line: 4, column: 7 },
+    });
+    equalsJSON(p.body[1].inverse.loc, {
+      start: { line: 4, column: 15 },
+      end: { line: 6, column: 5 },
+    });
   });
 });
