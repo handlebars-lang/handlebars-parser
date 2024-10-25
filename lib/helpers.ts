@@ -22,7 +22,7 @@ export class ParserHelpers {
 
     let squareSyntax: SyntaxOptions['square'];
 
-    if (typeof options?.syntax?.square === 'function') {
+    if (typeof options.syntax?.square === 'function') {
       squareSyntax = options.syntax.square;
     } else if (options?.syntax?.square === 'node') {
       squareSyntax = arrayLiteralNode;
