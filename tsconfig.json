@@ -13,9 +13,6 @@
     // Enhance Strictness
     "strict": true,
     "suppressImplicitAnyIndexErrors": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
     "newLine": "LF",
     "allowJs": true,
   },

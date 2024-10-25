@@ -30,11 +30,11 @@ export function parse<T extends ast.VisitableNode>(
   let ast = parseWithoutProcessing(input, options);
   let strip = new WhitespaceControl(options);
 
-  // @ts-expect-error
   return strip.accept(ast);
 }
 export interface ParseOptions {
   srcName?: string;
+  ignoreStandalone?: boolean;
   syntax?: SyntaxOptions;
 }
 
