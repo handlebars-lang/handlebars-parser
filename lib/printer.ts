@@ -43,10 +43,9 @@ export class PrintVisitor extends Visitor {
     return out;
   }
 
-  callBody(callExpr: ast.CallNode) {
-    let params = callExpr.params,
-      paramStrings = [],
-      hash;
+  callNode(callExpr: ast.CallNode) {
+    let params = callExpr.params;
+    let paramStrings = [];
 
     for (let i = 0, l = params.length; i < l; i++) {
       paramStrings.push(this.accept(params[i]));
@@ -62,7 +61,7 @@ export class PrintVisitor extends Visitor {
 
   MustacheStatement(mustache: ast.MustacheStatement) {
     if (mustache.params.length > 0 || mustache.hash) {
-      return this.pad('{{ ' + this.callBody(mustache) + ' }}');
+      return this.pad('{{ ' + this.callNode(mustache) + ' }}');
     } else {
       return this.pad('{{ ' + this.accept(mustache.path) + ' }}');
     }
@@ -87,7 +86,7 @@ export class PrintVisitor extends Visitor {
       (block.type === 'DecoratorBlock' ? 'DIRECTIVE ' : '') + 'BLOCK:'
     );
     this.padding++;
-    out += this.pad(this.callBody(block));
+    out += this.pad(this.callNode(block));
     if (block.program) {
       out += this.pad('PROGRAM:');
       this.padding++;
@@ -150,7 +149,7 @@ export class PrintVisitor extends Visitor {
   }
 
   SubExpression(subExpression: ast.SubExpression) {
-    return this.callBody(subExpression);
+    return `(${this.callNode(subExpression)})`;
   }
 
   PathExpression(id: ast.PathExpression) {
@@ -186,6 +185,10 @@ export class PrintVisitor extends Visitor {
 
   HashLiteral(hash: ast.HashLiteral) {
     return `Hash{${this.hashPairs(hash.pairs)}}`;
+  }
+
+  Hash(hash: ast.Hash) {
+    return `HASH{${this.hashPairs(hash.pairs)}}`;
   }
 
   hashPairs(pairs: ast.HashPair[]) {

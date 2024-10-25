@@ -74,6 +74,7 @@ export interface Program extends Node {
   blockParams?: string[];
   /** @compat */
   strip: {};
+  chained?: boolean;
 }
 
 export interface BaseStatement extends Node {}
@@ -116,7 +117,7 @@ export interface PartialStatement extends BaseStatement, WithArgsNode {
   strip: StripFlags;
 }
 
-export interface PartialBlockStatement extends BaseStatement, WithArgsNode {
+export interface PartialBlockStatement extends BaseBlockStatement {
   type: 'PartialBlockStatement';
   name: PathExpression | SubExpression;
   program: Program;
@@ -127,7 +128,9 @@ export interface PartialBlockStatement extends BaseStatement, WithArgsNode {
 export interface ContentStatement extends BaseStatement {
   type: 'ContentStatement';
   value: string;
-  original: StripFlags;
+  original: string;
+  rightStripped?: boolean;
+  leftStripped?: boolean;
 }
 
 export interface CommentStatement extends BaseStatement {
@@ -208,6 +211,9 @@ export interface HashPair extends Node {
 export interface StripFlags {
   open?: boolean;
   close?: boolean;
+  openStandalone?: boolean;
+  closeStandalone?: boolean;
+  inlineStandalone?: boolean;
 }
 
 export interface WithArgsNode {
