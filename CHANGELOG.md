@@ -1,5 +1,27 @@
 # Changelog
 
+## Release (2025-03-19)
+
+* @handlebars/parser 2.2.0 (minor)
+
+#### :rocket: Enhancement
+* `@handlebars/parser`
+  * [#15](https://github.com/handlebars-lang/handlebars-parser/pull/15) Implement hash and array literal syntax ([@wycats](https://github.com/wycats))
+  * [#14](https://github.com/handlebars-lang/handlebars-parser/pull/14) Add support for a `#` prefix in path segments ([@wycats](https://github.com/wycats))
+
+#### :bug: Bug Fix
+* `@handlebars/parser`
+  * [#6](https://github.com/handlebars-lang/handlebars-parser/pull/6) [bugfix] Don't emit `parts: [undefined]` for `{{this}}` ([@dfreeman](https://github.com/dfreeman))
+
+#### :house: Internal
+* `@handlebars/parser`
+  * [#17](https://github.com/handlebars-lang/handlebars-parser/pull/17) Add release plan, remove release-it ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+
+#### Committers: 3
+- Dan Freeman ([@dfreeman](https://github.com/dfreeman))
+- Yehuda Katz ([@wycats](https://github.com/wycats))
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## v2.1.0 (2021-02-22)
 
 #### :rocket: Enhancement
