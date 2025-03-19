@@ -1,6 +1,5 @@
 {
   "name": "@handlebars/parser",
-  "type": "module",
   "version": "2.1.0",
   "description": "The parser for the Handlebars language",
   "homepage": "https://github.com/handlebars-lang/handlebars-parser#readme",
@@ -13,9 +12,7 @@
   },
   "license": "ISC",
   "author": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "types/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "require": {
@@ -32,6 +29,9 @@
       }
     }
   },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "types/index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build",
@@ -47,9 +47,9 @@
     "test:bail": "mocha --bail --inline-diffs spec"
   },
   "prettier": {
-    "tabWidth": 2,
     "semi": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "tabWidth": 2
   },
   "devDependencies": {
     "combine-files": "^1.1.8",
@@ -62,12 +62,13 @@
     "prettier": "^2.1.1",
     "release-it": "^14.0.2",
     "release-it-lerna-changelog": "^2.4.0",
+    "release-plan": "^0.16.0",
     "typescript": "^5.6.3"
   },
+  "packageManager": "pnpm@9.12.2",
   "engines": {
     "node": "^20.18.0"
   },
-  "packageManager": "pnpm@9.12.2",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
