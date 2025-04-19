@@ -36,6 +36,8 @@ describe('parser', function () {
     equalsAst('{{this/foo}}', '{{ p%foo }}');
     equalsAst('{{this.foo}}', '{{ p%this.foo }}');
     equalsAst('{{this.#foo}}', '{{ p%this.#foo }}');
+    equalsAst('{{this.foo.0}}', '{{ p%this.foo/0 }}');
+    equalsAst('{{this.0}}', '{{ p%this.0 }}');
   });
 
   it('parses mustaches with - in a path', function () {

@@ -174,6 +174,6 @@ path
   ;
 
 pathSegments
-  : pathSegments sep ID { $1.push({part: yy.id($3), original: $3, separator: $2}); $$ = $1; }
+  : pathSegments sep (ID | NUMBER) { $1.push({part: yy.id($3), original: $3, separator: $2}); $$ = $1; }
   | ID -> [{part: yy.id($1), original: $1}]
   ;
