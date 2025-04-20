@@ -36,8 +36,16 @@ describe('parser', function () {
     equalsAst('{{this/foo}}', '{{ p%foo }}');
     equalsAst('{{this.foo}}', '{{ p%this.foo }}');
     equalsAst('{{this.#foo}}', '{{ p%this.#foo }}');
+    equalsAst('{{this.0.foo}}', '{{ p%this.0/foo }}');
     equalsAst('{{this.foo.0}}', '{{ p%this.foo/0 }}');
     equalsAst('{{this.0}}', '{{ p%this.0 }}');
+    shouldThrow(
+      function () {
+        astFor('{{0.foo}}');
+      },
+      Error,
+      /Invalid path: 0.foo/
+    );
   });
 
   it('parses mustaches with - in a path', function () {
