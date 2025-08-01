@@ -16,21 +16,36 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: wyvox/action@v1
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: 
+          cache: pnpm
+          node-version: 22
 
       - name: install dependencies
         run: pnpm i
-        env:
-          CI: true
       - run: pnpm run lint
 
   tests:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      matrix:
+        node-vesion:
+          - 18
+          - 20
+          - 22
+          - 24
 
     steps:
-      - uses: wyvox/action@v1
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: 
+          cache: pnpm
+          node-version: ${{matrix.node-vesion}}
 
       - name: install dependencies
         run: pnpm i
