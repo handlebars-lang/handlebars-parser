@@ -256,6 +256,10 @@ describe('parser', function () {
       '{{#foo}} bar {{else if bar}}{{else}} baz {{/foo}}',
       "BLOCK:\n  p%foo\n  PROGRAM:\n    CONTENT[ ' bar ' ]\n  {{^}}\n    BLOCK:\n      p%if [p%bar]\n      PROGRAM:\n      {{^}}\n        CONTENT[ ' baz ' ]"
     );
+    equalsAst(
+      '\t{{#if false}}\n\t{{else if false}}\n\t{{else}}\n\t{{/if}}',
+      "CONTENT[ '' ]\nBLOCK:\n  p%if [b%false]\n  PROGRAM:\n    CONTENT[ '' ]\n  {{^}}\n    BLOCK:\n      p%if [b%false]\n      PROGRAM:\n        CONTENT[ '' ]\n      {{^}}\n        CONTENT[ '' ]"
+    );
   });
 
   it('parses empty blocks', function () {

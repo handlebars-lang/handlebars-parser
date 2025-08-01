@@ -17,6 +17,11 @@ describe('ast', function () {
         equals(ast.body[0].value, '');
         equals(ast.body[1].program.body[0].value, 'foo');
       });
+
+      it('chained block statements', function () {
+        let ast = parse('{{#if false}}\n{{else if false}}\n{{else}}\n\t{{/if}}');
+        equals(ast.body[0].inverse.body[0].inverse.body[0].value, '');
+      })
     });
 
     describe('parseWithoutProcessing', function () {
