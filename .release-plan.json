@@ -1,26 +1,18 @@
 {
   "solution": {
     "@handlebars/parser": {
-      "impact": "minor",
-      "oldVersion": "2.1.0",
-      "newVersion": "2.2.0",
+      "impact": "patch",
+      "oldVersion": "2.2.0",
+      "newVersion": "2.2.1",
       "tagName": "latest",
       "constraints": [
         {
-          "impact": "minor",
-          "reason": "Appears in changelog section :rocket: Enhancement"
-        },
-        {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
-        },
-        {
-          "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-03-19)\n\n* @handlebars/parser 2.2.0 (minor)\n\n#### :rocket: Enhancement\n* `@handlebars/parser`\n  * [#15](https://github.com/handlebars-lang/handlebars-parser/pull/15) Implement hash and array literal syntax ([@wycats](https://github.com/wycats))\n  * [#14](https://github.com/handlebars-lang/handlebars-parser/pull/14) Add support for a `#` prefix in path segments ([@wycats](https://github.com/wycats))\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#6](https://github.com/handlebars-lang/handlebars-parser/pull/6) [bugfix] Don't emit `parts: [undefined]` for `{{this}}` ([@dfreeman](https://github.com/dfreeman))\n\n#### :house: Internal\n* `@handlebars/parser`\n  * [#17](https://github.com/handlebars-lang/handlebars-parser/pull/17) Add release plan, remove release-it ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 3\n- Dan Freeman ([@dfreeman](https://github.com/dfreeman))\n- Yehuda Katz ([@wycats](https://github.com/wycats))\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2025-08-01)\n\n* @handlebars/parser 2.2.1 (patch)\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#24](https://github.com/handlebars-lang/handlebars-parser/pull/24) fix node engine and create a test matrix in CI ([@mansona](https://github.com/mansona))\n\n#### Committers: 1\n- Chris Manson ([@mansona](https://github.com/mansona))\n"
 }

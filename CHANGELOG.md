@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2025-08-01)
+
+* @handlebars/parser 2.2.1 (patch)
+
+#### :bug: Bug Fix
+* `@handlebars/parser`
+  * [#24](https://github.com/handlebars-lang/handlebars-parser/pull/24) fix node engine and create a test matrix in CI ([@mansona](https://github.com/mansona))
+
+#### Committers: 1
+- Chris Manson ([@mansona](https://github.com/mansona))
+
 ## Release (2025-03-19)
 
 * @handlebars/parser 2.2.0 (minor)
