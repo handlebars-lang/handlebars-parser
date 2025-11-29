@@ -1,6 +1,6 @@
 {
   "name": "@handlebars/parser",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "The parser for the Handlebars language",
   "homepage": "https://github.com/handlebars-lang/handlebars-parser#readme",
   "bugs": {

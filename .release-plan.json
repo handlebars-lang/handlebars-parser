@@ -2,8 +2,8 @@
   "solution": {
     "@handlebars/parser": {
       "impact": "patch",
-      "oldVersion": "2.2.0",
-      "newVersion": "2.2.1",
+      "oldVersion": "2.2.1",
+      "newVersion": "2.2.2",
       "tagName": "latest",
       "constraints": [
         {
@@ -14,5 +14,5 @@
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-08-01)\n\n* @handlebars/parser 2.2.1 (patch)\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#24](https://github.com/handlebars-lang/handlebars-parser/pull/24) fix node engine and create a test matrix in CI ([@mansona](https://github.com/mansona))\n\n#### Committers: 1\n- Chris Manson ([@mansona](https://github.com/mansona))\n"
+  "description": "## Release (2025-11-29)\n\n* @handlebars/parser 2.2.2 (patch)\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#27](https://github.com/handlebars-lang/handlebars-parser/pull/27) Fix commonjs build ([@kaermorchen](https://github.com/kaermorchen))\n\n#### Committers: 1\n- Stanislav Romanov ([@kaermorchen](https://github.com/kaermorchen))\n"
 }
