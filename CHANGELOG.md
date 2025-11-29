@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2025-11-29)
+
+* @handlebars/parser 2.2.2 (patch)
+
+#### :bug: Bug Fix
+* `@handlebars/parser`
+  * [#27](https://github.com/handlebars-lang/handlebars-parser/pull/27) Fix commonjs build ([@kaermorchen](https://github.com/kaermorchen))
+
+#### Committers: 1
+- Stanislav Romanov ([@kaermorchen](https://github.com/kaermorchen))
+
 ## Release (2025-08-01)
 
 * @handlebars/parser 2.2.1 (patch)
