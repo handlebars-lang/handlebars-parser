@@ -8,6 +8,7 @@
     "baseUrl": "lib",
     "rootDir": "lib",
     "esModuleInterop": true,
+    "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
     // Enhance Strictness
     "strict": true,
