@@ -538,4 +538,9 @@ describe('parser', function () {
       })
     );
   });
+
+  it('GH2059 - should evaluate null characters', function() {
+    const nul = String.fromCharCode(0);
+    equalsAst('Hello ' + nul + ' {{name}}', "CONTENT[ 'Hello " + nul + " ' ]\n{{ p%name }}" )
+  })
 });
