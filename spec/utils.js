@@ -1,4 +1,4 @@
-import { parse, print } from '../dist/esm/index.js';
+import { parse, print } from '../dist/index.js';
 
 let AssertError;
 if (Error.captureStackTrace) {
