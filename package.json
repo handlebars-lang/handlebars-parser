@@ -13,6 +13,7 @@
   "license": "ISC",
   "author": "",
   "type": "module",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
