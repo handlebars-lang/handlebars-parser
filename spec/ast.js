@@ -236,6 +236,20 @@ describe('ast', function () {
 
         equals(ast.body[2].value, '');
       });
+
+      it('strips close-tag indent from all chained else-if branches', function () {
+        let ast = parse(
+            '  {{#if a}}\n    foo\n  {{else if b}}\n    bar\n  {{else if c}}\n    baz\n  {{/if}}'
+          ),
+          block = ast.body[1],
+          bBlock = block.inverse.body[0],
+          cBlock = bBlock.inverse.body[0];
+
+        equals(ast.body[0].value, '');
+        equals(block.program.body[0].value, '    foo\n');
+        equals(bBlock.program.body[0].value, '    bar\n');
+        equals(cBlock.program.body[0].value, '    baz\n'); // indent before {{/if}} stripped
+      });
     });
     describe('partials - parseWithoutProcessing', function () {
       it('simple partial', function () {
