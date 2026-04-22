@@ -17,6 +17,17 @@ describe('ast', function () {
         equals(ast.body[0].value, '');
         equals(ast.body[1].program.body[0].value, 'foo');
       });
+
+      it('tilde on one else-if does not strip trailing whitespace in later branches', function () {
+        let ast = parse('{{#if a}}A{{else if b}}B {{~else if c}}C {{/if}}'),
+          block = ast.body[0],
+          bBlock = block.inverse.body[0],
+          cBlock = bBlock.inverse.body[0];
+
+        equals(block.program.body[0].value, 'A');
+        equals(bBlock.program.body[0].value, 'B'); // tilde strips trailing space from b
+        equals(cBlock.program.body[0].value, 'C '); // no tilde on {{/if}}, space preserved
+      });
     });
 
     describe('parseWithoutProcessing', function () {
