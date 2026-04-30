@@ -17,6 +17,17 @@ describe('ast', function () {
         equals(ast.body[0].value, '');
         equals(ast.body[1].program.body[0].value, 'foo');
       });
+
+      it('tilde on one else-if does not strip trailing whitespace in later branches', function () {
+        let ast = parse('{{#if a}}A{{else if b}}B {{~else if c}}C {{/if}}'),
+          block = ast.body[0],
+          bBlock = block.inverse.body[0],
+          cBlock = bBlock.inverse.body[0];
+
+        equals(block.program.body[0].value, 'A');
+        equals(bBlock.program.body[0].value, 'B'); // tilde strips trailing space from b
+        equals(cBlock.program.body[0].value, 'C '); // no tilde on {{/if}}, space preserved
+      });
     });
 
     describe('parseWithoutProcessing', function () {
@@ -235,6 +246,20 @@ describe('ast', function () {
         equals(block.inverse.body[0].value, '  bar \n');
 
         equals(ast.body[2].value, '');
+      });
+
+      it('strips close-tag indent from all chained else-if branches', function () {
+        let ast = parse(
+            '  {{#if a}}\n    foo\n  {{else if b}}\n    bar\n  {{else if c}}\n    baz\n  {{/if}}'
+          ),
+          block = ast.body[1],
+          bBlock = block.inverse.body[0],
+          cBlock = bBlock.inverse.body[0];
+
+        equals(ast.body[0].value, '');
+        equals(block.program.body[0].value, '    foo\n');
+        equals(bBlock.program.body[0].value, '    bar\n');
+        equals(cBlock.program.body[0].value, '    baz\n'); // indent before {{/if}} stripped
       });
     });
     describe('partials - parseWithoutProcessing', function () {
