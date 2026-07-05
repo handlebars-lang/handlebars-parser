@@ -35,9 +35,8 @@
   "scripts": {
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build",
-    "build": "npm-run-all build:parser build:esm build:cjs",
-    "build:cjs": "tsc --module commonjs --moduleResolution node --target es5 --outDir dist/cjs && node -e \"var fs=require('fs'),d='dist/cjs';fs.readdirSync(d).forEach(function(f){if(!f.endsWith('.js'))return;var s=d+'/'+f;fs.writeFileSync(s,fs.readFileSync(s,'utf8').split('.js\\\")').join('.cjs\\\")'));fs.renameSync(s,s.slice(0,-3)+'.cjs')})\"",
-    "build:esm": "tsc --module es2015 --target es5 --outDir dist/esm",
+    "build": "npm-run-all build:parser build:bundle",
+    "build:bundle": "rolldown -c",
     "build:jison": "jison -m js src/handlebars.yy src/handlebars.l -o lib/parser.js",
     "build:parser": "npm-run-all build:jison build:parser-suffix",
     "build:parser-suffix": "combine-files lib/parser.js,src/parser-suffix.js lib/parser.js",
@@ -61,6 +60,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.1",
     "release-plan": "^0.16.0",
+    "rolldown": "^1.1.4",
     "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@9.12.2",
