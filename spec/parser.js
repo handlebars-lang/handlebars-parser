@@ -1,4 +1,4 @@
-import { parse, print } from '../dist/esm/index.js';
+import { parse, print } from '../dist/index.js';
 import { equals, equalsAst, shouldThrow } from './utils.js';
 
 describe('parser', function () {

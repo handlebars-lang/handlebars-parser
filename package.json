@@ -13,34 +13,26 @@
   "license": "ISC",
   "author": "",
   "type": "module",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
-      "require": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "default": {
-        "types": "./types/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      }
+      "types": "./types/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "types/index.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
   "scripts": {
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build",
-    "build": "npm-run-all build:parser build:esm build:cjs",
-    "build:cjs": "tsc --module commonjs --moduleResolution node --target es5 --outDir dist/cjs",
-    "build:esm": "tsc --module es2015 --target es5 --outDir dist/esm",
+    "build": "npm-run-all build:parser build:esm",
+    "build:esm": "tsc --module es2022 --outDir dist",
     "build:jison": "jison -m js src/handlebars.yy src/handlebars.l -o lib/parser.js",
-    "build:parser": "npm-run-all build:jison build:parser-suffix",
+    "build:parser": "npm-run-all build:jison build:parser-suffix build:parser-clean",
     "build:parser-suffix": "combine-files lib/parser.js,src/parser-suffix.js lib/parser.js",
+    "build:parser-clean": "node --input-type=module -e \"import{readFileSync,writeFileSync}from'fs';const f='lib/parser.js';writeFileSync(f,readFileSync(f,'utf8').replace(/^\\s*_token_stack:\\n/m,''))\"",
     "pretest": "pnpm run build",
     "test": "mocha --inline-diffs spec",
     "pretest:bail": "pnpm run build",
@@ -65,7 +57,7 @@
   },
   "packageManager": "pnpm@9.12.2",
   "engines": {
-    "node": "^18 || ^20 || ^22 || >=24"
+    "node": "^20 || ^22 || >=24"
   },
   "publishConfig": {
     "access": "public",
