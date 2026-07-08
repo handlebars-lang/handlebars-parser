@@ -1,5 +1,21 @@
 # Changelog
 
+## Release (2026-07-08)
+
+* @handlebars/parser 2.2.3 (patch)
+
+#### :bug: Bug Fix
+* `@handlebars/parser`
+  * [#31](https://github.com/handlebars-lang/handlebars-parser/pull/31) Fix whitespace handling for chained `{{else if}}` blocks ([@theodorejb](https://github.com/theodorejb))
+
+#### :memo: Documentation
+* `@handlebars/parser`
+  * [#35](https://github.com/handlebars-lang/handlebars-parser/pull/35) Docs: Add troubleshooting documentation. ([@reggietheroman](https://github.com/reggietheroman))
+
+#### Committers: 2
+- Reggie Bigornia ([@reggietheroman](https://github.com/reggietheroman))
+- Theodore Brown ([@theodorejb](https://github.com/theodorejb))
+
 ## Release (2025-11-29)
 
 * @handlebars/parser 2.2.2 (patch)

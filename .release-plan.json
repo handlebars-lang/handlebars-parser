@@ -2,17 +2,21 @@
   "solution": {
     "@handlebars/parser": {
       "impact": "patch",
-      "oldVersion": "2.2.1",
-      "newVersion": "2.2.2",
+      "oldVersion": "2.2.2",
+      "newVersion": "2.2.3",
       "tagName": "latest",
       "constraints": [
         {
           "impact": "patch",
           "reason": "Appears in changelog section :bug: Bug Fix"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :memo: Documentation"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-11-29)\n\n* @handlebars/parser 2.2.2 (patch)\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#27](https://github.com/handlebars-lang/handlebars-parser/pull/27) Fix commonjs build ([@kaermorchen](https://github.com/kaermorchen))\n\n#### Committers: 1\n- Stanislav Romanov ([@kaermorchen](https://github.com/kaermorchen))\n"
+  "description": "## Release (2026-07-08)\n\n* @handlebars/parser 2.2.3 (patch)\n\n#### :bug: Bug Fix\n* `@handlebars/parser`\n  * [#31](https://github.com/handlebars-lang/handlebars-parser/pull/31) Fix whitespace handling for chained `{{else if}}` blocks ([@theodorejb](https://github.com/theodorejb))\n\n#### :memo: Documentation\n* `@handlebars/parser`\n  * [#35](https://github.com/handlebars-lang/handlebars-parser/pull/35) Docs: Add troubleshooting documentation. ([@reggietheroman](https://github.com/reggietheroman))\n\n#### Committers: 2\n- Reggie Bigornia ([@reggietheroman](https://github.com/reggietheroman))\n- Theodore Brown ([@theodorejb](https://github.com/theodorejb))\n"
 }
