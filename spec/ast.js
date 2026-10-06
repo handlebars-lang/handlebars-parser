@@ -47,6 +47,35 @@ describe('ast', function () {
         equals(ast.body[1].program.body[0].value, ' \nfoo\n ');
       });
     });
+
+    describe('performance', function () {
+      // Each template below takes several seconds to parse, and so exceeds the
+      // test timeout, if finding trailing whitespace is not linear in its length.
+      let spaces = ' '.repeat(100000),
+        newlines = '\n'.repeat(100000);
+
+      it('should strip whitespace in linear time', function () {
+        let ast = parse(spaces + 'x' + spaces + '{{~foo}}');
+
+        equals(ast.body[0].value, spaces + 'x');
+      });
+
+      it('should detect standalone lines in linear time', function () {
+        let ast = parse(newlines + 'x{{foo}}');
+        equals(ast.body[0].value, newlines + 'x');
+
+        ast = parse('{{foo}}' + newlines + 'x{{foo}}');
+        equals(ast.body[1].value, newlines + 'x');
+      });
+
+      it('should find partial indentation in linear time', function () {
+        let ast = parse(spaces + 'x\n  {{> dude}}\n');
+
+        equals(ast.body[0].value, spaces + 'x\n');
+        equals(ast.body[1].indent, '  ');
+        equals(ast.body[2].value, '');
+      });
+    });
   });
 
   describe('node details', function () {
