@@ -45,11 +45,18 @@ jobs:
       - uses: actions/setup-node@v4
         with: 
           cache: pnpm
-          node-version: ${{matrix.node-vesion}}
+          node-version: 22
 
       - name: install dependencies
         run: pnpm i
         env:
           CI: true
 
-      - run: pnpm test
+      # The build tools need a newer Node than the package supports.
+      - run: pnpm build
+
+      - uses: actions/setup-node@v4
+        with: 
+          node-version: ${{matrix.node-vesion}}
+
+      - run: pnpm exec mocha --inline-diffs spec
