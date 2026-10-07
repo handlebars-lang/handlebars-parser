@@ -2,6 +2,17 @@
 
 ## Release (2026-10-07)
 
+* @handlebars/parser 2.2.4 (patch)
+
+#### :bug: Bug Fix
+* `@handlebars/parser`
+  * [#38](https://github.com/handlebars-lang/handlebars-parser/pull/38) Build with rolldown so that require() works ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+#### Committers: 1
+- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+## Release (2026-10-07)
+
 * @handlebars/parser 2.2.3 (patch)
 
 #### :bug: Bug Fix
